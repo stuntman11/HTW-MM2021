@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class MainMenuControl : MonoBehaviour
+public class MainMenuController : MonoBehaviour
 {
     private KeywordRecognizer recognizer;
 
     void Awake()
     {
-        string[] keywords = new string[] { "start", "beenden" };
+        string[] keywords = new string[] { "laden", "beenden" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
+
+        Button btnLoad = GameObject.Find("BtnLoad").GetComponent<Button>();
+        btnLoad.onClick.AddListener(Load);
 
         Button btnExit = GameObject.Find("BtnExit").GetComponent<Button>();
         btnExit.onClick.AddListener(Exit);
@@ -20,18 +24,16 @@ public class MainMenuControl : MonoBehaviour
 
     private void OnRecognition(PhraseRecognizedEventArgs args)
     {
-        Debug.Log(string.Format("Recognized: '{0}'", args.text));
-        if (args.text.Equals("beenden")) Exit();
+        string command = args.text;
+        Debug.Log(string.Format("Command: '{0}'", command));
+
+        if (command.Equals("beenden")) Exit();
+        else if (command.Equals("laden")) Load();
     }
 
-    void OnEnable()
+    private void Load()
     {
-        recognizer.Start();
-    }
-
-    void OnDisable()
-    {
-        recognizer.Stop();
+        SceneManager.LoadScene("Level1");
     }
 
     private void Exit()
@@ -39,4 +41,8 @@ public class MainMenuControl : MonoBehaviour
         UnityEditor.EditorApplication.ExitPlaymode();
         Application.Quit();
     }
+
+    void OnEnable() => recognizer.Start();
+    void OnDisable() => recognizer.Stop();
+    void OnDestroy() => recognizer.Dispose();
 }
