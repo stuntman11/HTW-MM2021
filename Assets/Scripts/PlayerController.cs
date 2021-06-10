@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public PlayerController()
     {
-        this.currentPos = new Vector2Int();
+        this.currentPos = new Vector2Int(1, 1);
         this.lastPos = currentPos;
     }
 
