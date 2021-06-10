@@ -24,7 +24,12 @@ public class EnemyMovement : MonoBehaviour
     private Vector2Int lastPos;
 
     private float timer;
-   
+
+    void Awake()
+    {
+        LevelController level = GameObject.Find("Controller").GetComponent<LevelController>();
+        level.OnTick += OnTick;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -39,18 +44,14 @@ public class EnemyMovement : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if (timer >= 1)
-        {
-            timer -= 1;
-            Tick();
-        }
         Vector3 current = GridToWorldPos(currentPos);
         Vector3 last = GridToWorldPos(lastPos);
         transform.position = Vector3.Lerp(last, current, timer * 5);
     }
 
-    private void Tick()
+    private void OnTick(string command)
     {
+        timer = 0;
         Vector2Int targetWaypoint = waypoints[targetIndex];
         lastPos = currentPos;
 

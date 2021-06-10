@@ -13,7 +13,7 @@ public class LevelController : MonoBehaviour
 
     void Awake()
     {
-        string[] keywords = new string[] { "vor", "zurück", "links", "rechts", "pause" };
+        string[] keywords = new string[] { "hoch", "runter", "links", "rechts", "pause" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
     }
@@ -35,7 +35,7 @@ public class LevelController : MonoBehaviour
 
     private bool IsTickSource(string command)
     {
-        return command.Equals("vor") || command.Equals("zurück") || command.Equals("links") || command.Equals("right");
+        return command.Equals("hoch") || command.Equals("runter") || command.Equals("links") || command.Equals("rechts");
     }
 
     void OnEnable() => recognizer.Start();
