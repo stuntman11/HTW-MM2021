@@ -1,60 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : LevelBehavior
 {
-   public enum PathType
+    public enum PathType
     {
         Circular,
         Edge
     };
-
-    public Tilemap tilemap;
-
+    
     public PathType pathType;
-
     public List<Vector2Int> waypoints;
 
     private int targetIndex = 1;
     private int moveDir = 1;
 
-    private Vector2Int currentPos;
-    private Vector2Int lastPos;
-
-    private float timer;
-
-    void Awake()
+    protected override void OnStart()
     {
-        LevelController level = GameObject.Find("Controller").GetComponent<LevelController>();
-        level.OnTick += OnTick;
+        StartAt(waypoints[0]);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void OnTick(string command)
     {
-        transform.position = GridToWorldPos(waypoints[0]);
-        currentPos = waypoints[0];
-        lastPos = waypoints[0];
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        timer += Time.deltaTime;
-
-        Vector3 current = GridToWorldPos(currentPos);
-        Vector3 last = GridToWorldPos(lastPos);
-        transform.position = Vector3.Lerp(last, current, timer * 5);
-    }
-
-    private void OnTick(string command)
-    {
-        timer = 0;
         Vector2Int targetWaypoint = waypoints[targetIndex];
-        lastPos = currentPos;
-
+        
         if (currentPos.x == targetWaypoint.x && currentPos.y == targetWaypoint.y)
         {
             if (pathType == PathType.Circular)
@@ -69,29 +39,7 @@ public class EnemyMovement : MonoBehaviour
                 targetIndex += moveDir;
             }
         }
-        targetWaypoint = waypoints[targetIndex];
-        currentPos = TileBasedMovement(targetWaypoint);
-    }
-
-    private Vector2Int TileBasedMovement(Vector2Int targetPos)
-    {
-        Vector2Int deltaVector = targetPos - currentPos;
-        Vector2Int tbmVector = new Vector2Int(); //TileBasedMovementVector
-
-        if (deltaVector.x > 0) tbmVector.x = 1;
-        else if (deltaVector.x < 0) tbmVector.x = -1;
-        else if (deltaVector.y > 0) tbmVector.y = 1;
-        else if (deltaVector.y < 0) tbmVector.y = -1;
-
-        return tbmVector + currentPos;
-    }
-
-    private Vector3 GridToWorldPos(Vector2Int grid)
-    {
-        int x = grid.x + tilemap.cellBounds.xMin;
-        int y = grid.y + tilemap.cellBounds.yMin;
-        Vector3 pos = tilemap.CellToWorld(new Vector3Int(x, y, 0));
-        pos.z = transform.position.z;
-        return pos;
+        int nextTargetIndex = Mathf.Clamp(targetIndex, 0, waypoints.Count - 1);
+        MoveTowards(waypoints[nextTargetIndex]);
     }
 }

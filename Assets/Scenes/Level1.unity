@@ -3419,7 +3419,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61e0af13bae8bd4d8617e7a48d95424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 583003483}
 --- !u!212 &812561238
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3514,6 +3513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090eb0c0d92a7f649af9cd61c1f4b008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tilemap: {fileID: 583003483}
 --- !u!4 &863101665
 Transform:
   m_ObjectHideFlags: 0
@@ -3650,7 +3650,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1845416342}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -13.19}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3699,7 +3699,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cd8871f4a21cf143826a1c8ffad11b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 583003483}
   pathType: 1
   waypoints:
   - {x: 13, y: 2}
@@ -3763,7 +3762,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1965101005}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.56, y: 0, z: 0}
+  m_LocalPosition: {x: 2.56, y: 2.56, z: 0}
   m_LocalScale: {x: 2.56, y: 2.56, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
