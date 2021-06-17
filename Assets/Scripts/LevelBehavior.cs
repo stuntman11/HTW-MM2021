@@ -45,6 +45,19 @@ public class LevelBehavior : MonoBehaviour
         return unitDirection;
     }
 
+    protected void Rotate(Vector2Int direction)
+    {
+        float angle = Mathf.Atan2(direction.y, direction.x);
+        float degrees = Mathf.Rad2Deg * angle - 90;
+        transform.rotation = Quaternion.Euler(0, 0, degrees);
+    }
+
+    protected void RotateTowards(Vector2Int targetPos)
+    {
+        Vector2Int direction = DirectionTowards(targetPos);
+        Rotate(direction);
+    }
+
     protected void MoveTowards(Vector2Int targetPos)
     {
         currentPos += DirectionTowards(targetPos);

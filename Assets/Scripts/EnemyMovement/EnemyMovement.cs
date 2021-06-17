@@ -40,6 +40,8 @@ public class EnemyMovement : LevelBehavior
             }
         }
         int nextTargetIndex = Mathf.Clamp(targetIndex, 0, waypoints.Count - 1);
-        MoveTowards(waypoints[nextTargetIndex]);
+        targetWaypoint = waypoints[nextTargetIndex];
+        RotateTowards(targetWaypoint);
+        MoveTowards(targetWaypoint);
     }
 }

@@ -18,6 +18,7 @@ public class PlayerController : LevelBehavior
         else if (command.Equals("links")) move = Vector2Int.left;
         else if (command.Equals("rechts")) move = Vector2Int.right;
 
+        if(move != Vector2Int.zero) Rotate(move);
         bool hasMoved = TryMove(move);
         Debug.Log(string.Format("Has Moved: {0}", hasMoved));
     }
