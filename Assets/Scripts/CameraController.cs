@@ -8,8 +8,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        Vector3 nextPos = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
-        nextPos.z = transform.position.z;
-        transform.position = nextPos;
+        Vector2 nextPos = Vector2.Lerp(transform.position, target.position, Time.deltaTime);
+        transform.position = new Vector3(nextPos.x, nextPos.y, -1);
     }
 }
