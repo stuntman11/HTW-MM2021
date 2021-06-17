@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<grammar xmlns="http://www.w3.org/2001/06/grammar" xml:lang="de" version="1.0" mode="voice" root="command">
+	<rule id="command">
+		<one-of>
+			<item repeat="1-"><ruleref uri="#action"/></item>
+			<item><ruleref uri="#control"/></item>
+		</one-of>
+	</rule>
+	<rule id="action">
+		<item repeat="0-"><ruleref uri="#multiplier"/></item>
+		<item><ruleref uri="#move"/></item>
+	</rule>
+	<rule id="control">
+		<one-of>
+			<item>stop</item>
+			<item>pause</item>
+			<item>weiter</item>
+		</one-of>
+	</rule>
+	<rule id="multiplier">
+		<one-of>
+			<item>zwei</item>
+			<item>drei</item>
+			<item>vier</item>
+			<item>fünf</item>
+			<item>sechs</item>
+			<item>sieben</item>
+			<item>acht</item>
+			<item>neun</item>
+		</one-of>
+	</rule>
+	<rule id="move">
+		<one-of>
+			<item>hoch</item>
+			<item>runter</item>
+			<item>links</item>
+			<item>rechts</item>
+			<item>warten</item>
+		</one-of>
+	</rule>
+</grammar>
