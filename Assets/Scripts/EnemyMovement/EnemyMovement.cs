@@ -21,11 +21,11 @@ public class EnemyMovement : LevelBehavior
         StartAt(waypoints[0]);
     }
 
-    protected override void OnTick(string command)
+    protected override void OnTick(Move move)
     {
         Vector2Int targetWaypoint = waypoints[targetIndex];
         
-        if (currentPos.x == targetWaypoint.x && currentPos.y == targetWaypoint.y)
+        if (pos.x == targetWaypoint.x && pos.y == targetWaypoint.y)
         {
             if (pathType == PathType.Circular)
             {
@@ -41,7 +41,8 @@ public class EnemyMovement : LevelBehavior
         }
         int nextTargetIndex = Mathf.Clamp(targetIndex, 0, waypoints.Count - 1);
         targetWaypoint = waypoints[nextTargetIndex];
-        RotateTowards(targetWaypoint);
+        Vector2Int rotation = RotateTowards(targetWaypoint);
         MoveTowards(targetWaypoint);
+        level.ShineLight(pos, rotation);
     }
 }

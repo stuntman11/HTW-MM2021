@@ -5,9 +5,8 @@ using UnityEngine;
 public class LevelBehavior : MonoBehaviour
 {
     protected LevelController level;
-    protected Vector2Int currentPos;
+    protected Vector2Int pos;
     protected Vector2Int lastPos;
-    protected float timer;
 
     void Awake()
     {
@@ -16,25 +15,22 @@ public class LevelBehavior : MonoBehaviour
         OnStart();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        Vector3 current = level.GridToWorldPos(currentPos);
+        Vector3 current = level.GridToWorldPos(pos);
         Vector3 last = level.GridToWorldPos(lastPos);
-        transform.position = Vector3.Lerp(last, current, timer * 5);
+        transform.position = Vector3.Lerp(last, current, level.TickTime * 2);
     }
 
-    private void OnLevelTick(string command)
+    private void OnLevelTick(Move move)
     {
-        lastPos = currentPos;
-        timer = 0;
-        OnTick(command);
+        lastPos = pos;
+        OnTick(move);
     }
 
     protected Vector2Int DirectionTowards(Vector2Int targetPos)
     {
-        Vector2Int direction = targetPos - currentPos;
+        Vector2Int direction = targetPos - pos;
         Vector2Int unitDirection = new Vector2Int();
 
         if (direction.x > 0) unitDirection.x = 1;
@@ -52,28 +48,31 @@ public class LevelBehavior : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, degrees);
     }
 
-    protected void RotateTowards(Vector2Int targetPos)
+    protected Vector2Int RotateTowards(Vector2Int targetPos)
     {
         Vector2Int direction = DirectionTowards(targetPos);
         Rotate(direction);
+        return direction;
     }
 
-    protected void MoveTowards(Vector2Int targetPos)
+    protected Vector2Int MoveTowards(Vector2Int targetPos)
     {
-        currentPos += DirectionTowards(targetPos);
+        Vector2Int direction = DirectionTowards(targetPos);
+        pos += direction;
+        return direction;
     }
 
     protected bool TryMove(Vector2Int direction)
     {
-        Vector2Int nextPos = currentPos + direction;
+        Vector2Int nextPos = pos + direction;
         if (level.IsTileSolid(nextPos)) return false;
-        currentPos = nextPos;
+        pos = nextPos;
         return true;
     }
 
     protected void StartAt(Vector2Int pos)
     {
-        currentPos = pos;
+        this.pos = pos;
         lastPos = pos;
         transform.position = level.GridToWorldPos(pos);
     }
@@ -81,5 +80,5 @@ public class LevelBehavior : MonoBehaviour
     protected void StartAtTransform() => StartAt(level.WorldToGridPos(transform.position));
 
     protected virtual void OnStart() { }
-    protected virtual void OnTick(string command) { }
+    protected virtual void OnTick(Move move) { }
 }

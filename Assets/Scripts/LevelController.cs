@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,18 +8,31 @@ using UnityEngine.Tilemaps;
 
 public class LevelController : MonoBehaviour
 {
-    public delegate void TickEventHandler(string command);
+    public delegate void TickEventHandler(Move move);
+    public delegate void AfterTickEventHandler();
+    public const float TICK_TIME = 0.5f;
 
-    public Tilemap tilemap;
+    public float TickTime
+    {
+       get { return timer * 1.0f / TICK_TIME;  }
+    }
+
+    public Tilemap Environment;
+    public Tilemap Light;
+    public TileBase LightTile;
+    
     public event TickEventHandler OnTick;
+    public event AfterTickEventHandler OnAfterTick;
 
-    private Queue<string> commands = new Queue<string>();
-    private double timer = 0;
-    private int multiply = 1;
+    private Queue<Move> moves = new Queue<Move>();
+    private float timer = 0;
+    private ActionParser parser = new ActionParser();
     private PhraseRecognizer recognizer;
 
     void Awake()
     {
+        ValidateTilemaps();
+
         recognizer = new GrammarRecognizer(Application.streamingAssetsPath + "/grammar.xml", ConfidenceLevel.Rejected);
         recognizer.OnPhraseRecognized += OnRecognition;
     }
@@ -27,38 +41,60 @@ public class LevelController : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if (commands.Count > 0 && timer >= 1)
+        if (moves.Count > 0 && timer >= TICK_TIME)
         {
             timer = 0;
-            string command = commands.Dequeue();
-            OnTick.Invoke(command);
+            Move move = moves.Dequeue();
+            Light.ClearAllTiles();
+            OnTick.Invoke(move);
+            OnAfterTick.Invoke();
         }
     }
 
-    public Vector3 GridToWorldPos(Vector2Int grid)
+    private void ValidateTilemaps()
     {
-        int x = grid.x + tilemap.cellBounds.xMin;
-        int y = grid.y + tilemap.cellBounds.yMin;
-        Vector3 pos = tilemap.CellToWorld(new Vector3Int(x, y, 0));
-        pos.z = 0;
-        return pos;
+        bool hasFail = false;
+        hasFail |= (Light.origin != Environment.origin);
+        hasFail |= (Light.cellBounds != Environment.cellBounds);
+        if (hasFail) throw new ArgumentException("tilemaps are not matching");
+    }
+
+    public Vector3 GridToWorldPos(Vector2Int pos)
+    {
+        Vector3 world = Environment.CellToWorld(DenormalizeGrid(pos));
+        world.z = 0;
+        return world;
     }
 
     public Vector2Int WorldToGridPos(Vector3 world)
     {
-        Vector3Int grid = tilemap.WorldToCell(new Vector3(world.x, world.y, 0));
-        int x = grid.x - tilemap.cellBounds.xMin;
-        int y = grid.y - tilemap.cellBounds.yMin;
-        return new Vector2Int(x, y);
+        Vector3Int grid = Environment.WorldToCell(new Vector3(world.x, world.y, 0));
+        return NormalizeGrid(grid);
+    }
+
+    private Tile TileAt(Tilemap tilemap, Vector2Int pos)
+    {
+        Vector3Int grid = DenormalizeGrid(pos);
+        return tilemap.GetTile<Tile>(grid);
     }
 
     public bool IsTileSolid(Vector2Int pos)
     {
-        int x = pos.x + tilemap.cellBounds.xMin;
-        int y = pos.y + tilemap.cellBounds.yMin;
-        Tile tile = tilemap.GetTile<Tile>(new Vector3Int(x, y, 0));
+        Tile tile = TileAt(Environment, pos);
         if (tile == null) return true;
         return tile.colliderType == Tile.ColliderType.Grid;
+    }
+
+    public bool IsLightTile(Vector2Int pos)
+    {
+        return TileAt(Light, pos) != null;
+    }
+
+    public void ShineLight(Vector2Int pos, Vector2Int direction)
+    {
+        Vector2Int targetPos = pos + direction;
+        Debug.Log(string.Format("Light at: {0}, {1} from {2}, {3}", targetPos.x, targetPos.y, pos.x, pos.y));
+        Light.SetTile(DenormalizeGrid(targetPos), LightTile);
     }
 
     private void OnRecognition(PhraseRecognizedEventArgs args)
@@ -70,22 +106,21 @@ public class LevelController : MonoBehaviour
         {
             SceneManager.LoadScene("MainMenu");
         }
-        else if (IsTickSource(command))
+        else
         {
-            for (int i = 0; i < this.multiply; i++)
-            {
-                commands.Enqueue(command);
-            }
-            this.multiply = 1;
-        }
-    }
+            List<Move> nextMoves = parser.Parse(command);
 
-    private bool IsTickSource(string command)
-    {
-        return command.Equals("hoch") || command.Equals("runter") || command.Equals("links") || command.Equals("rechts") || command.Equals("warten");
+            foreach (Move move in nextMoves)
+            {
+                moves.Enqueue(move);
+            }
+        }
     }
 
     void OnEnable() => recognizer.Start();
     void OnDisable() => recognizer.Stop();
     void OnDestroy() => recognizer.Dispose();
+
+    private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + Environment.origin.x, n.y + Environment.origin.y, 0);
+    private Vector2Int NormalizeGrid(Vector3Int n) => new Vector2Int(n.x - Environment.origin.x, n.y - Environment.origin.y);
 }

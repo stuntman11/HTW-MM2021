@@ -7,19 +7,25 @@ public class PlayerController : LevelBehavior
     protected override void OnStart()
     {
         StartAtTransform();
+        level.OnAfterTick += OnAfterTick;
     }
 
-    protected override void OnTick(string command)
+    protected override void OnTick(Move move)
     {
-        Vector2Int move = Vector2Int.zero;
+        Vector2Int moveDir = Vector2Int.zero;
 
-        if (command.Equals("hoch")) move = Vector2Int.up;
-        else if (command.Equals("runter")) move = Vector2Int.down;
-        else if (command.Equals("links")) move = Vector2Int.left;
-        else if (command.Equals("rechts")) move = Vector2Int.right;
+        if (move == Move.Up) moveDir = Vector2Int.up;
+        else if (move == Move.Down) moveDir = Vector2Int.down;
+        else if (move == Move.Left) moveDir = Vector2Int.left;
+        else if (move == Move.Right) moveDir = Vector2Int.right;
 
-        if(move != Vector2Int.zero) Rotate(move);
-        bool hasMoved = TryMove(move);
-        Debug.Log(string.Format("Has Moved: {0}", hasMoved));
+        if(moveDir != Vector2Int.zero) Rotate(moveDir);
+        bool hasMoved = TryMove(moveDir);
+        
+    }
+
+    private void OnAfterTick()
+    {
+        Debug.Log("Did the player hit the light?: " + level.IsLightTile(pos));
     }
 }
