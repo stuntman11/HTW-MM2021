@@ -12,6 +12,7 @@ public class LevelController : MonoBehaviour
     public delegate void TickEventHandler(Move move);
     public delegate void AfterTickEventHandler();
     public const float TICK_TIME = 0.5f;
+    public int Score = 5000;
 
     public float TickTime
     {
@@ -21,6 +22,8 @@ public class LevelController : MonoBehaviour
     public Tilemap Environment;
     public Tilemap Light;
     public TileBase LightTile;
+    public Transform Collectable;
+    private TextMeshProUGUI scoreText;
     
     public event TickEventHandler OnTick;
     public event AfterTickEventHandler OnAfterTick;
@@ -38,6 +41,8 @@ public class LevelController : MonoBehaviour
         commandText = GameObject.Find("Command").GetComponent<TextMeshProUGUI>();
         commandText.SetText("");
 
+        scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
+        scoreText.SetText(Score.ToString());
         recognizer = new GrammarRecognizer(Application.streamingAssetsPath + "/grammar.xml", ConfidenceLevel.Rejected);
         recognizer.OnPhraseRecognized += OnRecognition;
     }
@@ -52,6 +57,8 @@ public class LevelController : MonoBehaviour
             Move move = moves.Dequeue();
             Light.ClearAllTiles();
             OnTick.Invoke(move);
+            AlterScore(-50);
+            Debug.Log("Score: " + Score);
             OnAfterTick.Invoke();
         }
     }
@@ -121,6 +128,12 @@ public class LevelController : MonoBehaviour
                 moves.Enqueue(move);
             }
         }
+    }
+
+    public void AlterScore(int changeValue)
+    {
+        Score = Mathf.Max(Score + changeValue, 0);
+        scoreText.SetText(Score.ToString());
     }
 
     void OnEnable() => recognizer.Start();
