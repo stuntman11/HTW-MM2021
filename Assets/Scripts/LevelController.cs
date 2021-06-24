@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Windows.Speech;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 public class LevelController : MonoBehaviour
 {
@@ -28,10 +29,14 @@ public class LevelController : MonoBehaviour
     private float timer = 0;
     private ActionParser parser = new ActionParser();
     private PhraseRecognizer recognizer;
+    private TextMeshProUGUI commandText;
 
     void Awake()
     {
         ValidateTilemaps();
+
+        commandText = GameObject.Find("Command").GetComponent<TextMeshProUGUI>();
+        commandText.SetText("");
 
         recognizer = new GrammarRecognizer(Application.streamingAssetsPath + "/grammar.xml", ConfidenceLevel.Rejected);
         recognizer.OnPhraseRecognized += OnRecognition;
@@ -108,6 +113,7 @@ public class LevelController : MonoBehaviour
         }
         else
         {
+            commandText.SetText(command);
             List<Move> nextMoves = parser.Parse(command);
 
             foreach (Move move in nextMoves)
