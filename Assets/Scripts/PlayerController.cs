@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : LevelBehavior
 {
@@ -26,6 +27,12 @@ public class PlayerController : LevelBehavior
 
     private void OnAfterTick()
     {
-        Debug.Log("Did the player hit the light?: " + level.IsLightTile(pos));
+        bool playerHitLight = level.IsLightTile(pos);
+        Debug.Log("Did the player hit the light?: " + playerHitLight);
+        if (playerHitLight)
+        {
+            SceneManager.LoadScene("GameOverScreen");
+        }
+        
     }
 }
