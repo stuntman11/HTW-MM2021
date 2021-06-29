@@ -34,6 +34,8 @@ public class LevelController : MonoBehaviour
     private PhraseRecognizer recognizer;
     private TextMeshProUGUI commandText;
 
+    public GameObject PauseScreen;
+
     void Awake()
     {
         ValidateTilemaps();
@@ -50,7 +52,13 @@ public class LevelController : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-
+        if (PauseScreen.activeSelf && recognizer.IsRunning)
+        {
+            recognizer.Stop();
+        } else if(!PauseScreen.activeSelf && !recognizer.IsRunning)
+        {
+            recognizer.Start();
+        }
         if (moves.Count > 0 && timer >= TICK_TIME)
         {
             timer = 0;
@@ -111,15 +119,12 @@ public class LevelController : MonoBehaviour
 
     private void OnRecognition(PhraseRecognizedEventArgs args)
     {
-        string command = args.text;
-        Debug.Log(string.Format("Command: '{0}'", command));
-        
-        if (command.Equals("pause"))
+        if (!PauseScreen.activeSelf)
         {
-            SceneManager.LoadScene("MainMenu");
-        }
-        else
-        {
+            string command = args.text;
+            Debug.Log(string.Format("Command: '{0}'", command));
+
+
             commandText.SetText(command);
             List<Move> nextMoves = parser.Parse(command);
 
