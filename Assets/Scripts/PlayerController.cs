@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerController : LevelBehavior
+public class PlayerController : EntityBehaviour
 {
     protected override void OnStart()
     {

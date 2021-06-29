@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : LevelBehavior
+public class EnemyMovement : EntityBehaviour
 {
     public enum PathType
     {

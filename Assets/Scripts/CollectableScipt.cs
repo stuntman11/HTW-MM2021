@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollectableScipt : LevelBehavior
+public class CollectableScipt : EntityBehaviour
 {
     public int CollectableValue = 1000;
 

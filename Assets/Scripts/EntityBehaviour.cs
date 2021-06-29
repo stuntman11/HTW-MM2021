@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelBehavior : MonoBehaviour
+public class EntityBehaviour : MonoBehaviour
 {
     protected LevelController level;
     protected Vector2Int pos;
