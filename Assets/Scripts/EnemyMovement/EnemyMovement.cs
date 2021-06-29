@@ -44,5 +44,6 @@ public class EnemyMovement : LevelBehavior
         Vector2Int rotation = RotateTowards(targetWaypoint);
         MoveTowards(targetWaypoint);
         level.ShineLight(pos, rotation);
+        level.ShineLight(pos + rotation, rotation);
     }
 }

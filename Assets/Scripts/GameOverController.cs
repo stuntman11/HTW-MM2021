@@ -10,7 +10,7 @@ public class GameOverController : MonoBehaviour
     private KeywordRecognizer recognizer;
     void Awake()
     {
-        string[] keywords = new string[] { "restart", "return" };
+        string[] keywords = new string[] { "neustart", "zurück" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
 
@@ -26,8 +26,8 @@ public class GameOverController : MonoBehaviour
         string command = args.text;
         Debug.Log(string.Format("Command: '{0}'", command));
 
-        if (command.Equals("restart")) Restart();
-        else if (command.Equals("return")) Return();
+        if (command.Equals("neustart")) Restart();
+        else if (command.Equals("zurück")) Return();
     }
 
     private void Restart()
@@ -39,4 +39,8 @@ public class GameOverController : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    void OnEnable() => recognizer.Start();
+    void OnDisable() => recognizer.Stop();
+    void OnDestroy() => recognizer.Dispose();
 }

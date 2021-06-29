@@ -319,7 +319,7 @@ MonoBehaviour:
     links, rechts, hoch, runter
 
 
-    Multiplier: 0-9
+    Multiplier: 2-9
 
 
     Menu:
@@ -4793,7 +4793,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215688, g: 0.2834449, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
