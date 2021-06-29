@@ -419,7 +419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &494529305
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4420,7 +4420,7 @@ GameObject:
   - component: {fileID: 1290885259}
   - component: {fileID: 1290885258}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4756,6 +4756,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2730d89f78fe1a042945ecbacedfad8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InfoBtn: {fileID: 1175164781}
+  InfoList: {fileID: 494529304}
 --- !u!1 &1845416342
 GameObject:
   m_ObjectHideFlags: 0
