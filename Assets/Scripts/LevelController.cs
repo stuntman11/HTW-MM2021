@@ -22,7 +22,6 @@ public class LevelController : MonoBehaviour
     public Tilemap Environment;
     public Tilemap Light;
     public TileBase LightTile;
-    public Transform Collectable;
     private TextMeshProUGUI scoreText;
     
     public event TickEventHandler OnTick;
