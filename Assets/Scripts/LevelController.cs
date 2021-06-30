@@ -14,29 +14,31 @@ public class LevelController : MonoBehaviour
     public const float TICK_TIME = 0.5f;
     public int Score = 5000;
 
-    public float TickTime
+    public float TickProgress
     {
        get { return timer * 1.0f / TICK_TIME;  }
     }
 
-    public Tilemap Environment;
-    public Tilemap Light;
+    public GameObject Map;
     public TileBase LightTile;
-    private TextMeshProUGUI scoreText;
-    
+
     public event TickEventHandler OnTick;
     public event AfterTickEventHandler OnAfterTick;
 
     private Queue<Move> moves = new Queue<Move>();
     private float timer = 0;
     private ActionParser parser = new ActionParser();
-    private PhraseRecognizer recognizer;
-    private TextMeshProUGUI commandText;
 
-    public GameObject PauseScreen;
+    private Tilemap environment;
+    private Tilemap lights;
+
+    private TextMeshProUGUI commandText;
+    private TextMeshProUGUI scoreText;
 
     void Awake()
     {
+        environment = Map.transform.Find("Environment").GetComponent<Tilemap>();
+        lights = Map.transform.Find("Light").GetComponent<Tilemap>();
         ValidateTilemaps();
 
         commandText = GameObject.Find("Command").GetComponent<TextMeshProUGUI>();
@@ -44,25 +46,20 @@ public class LevelController : MonoBehaviour
 
         scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
         scoreText.SetText(Score.ToString());
-        recognizer = new GrammarRecognizer(Application.streamingAssetsPath + "/grammar.xml", ConfidenceLevel.Rejected);
-        recognizer.OnPhraseRecognized += OnRecognition;
+
+        CommandController command = GetComponent<CommandController>();
+        command.OnCommand += OnCommand;
     }
 
     void Update()
     {
         timer += Time.deltaTime;
-        if (PauseScreen.activeSelf && recognizer.IsRunning)
-        {
-            recognizer.Stop();
-        } else if(!PauseScreen.activeSelf && !recognizer.IsRunning)
-        {
-            recognizer.Start();
-        }
+
         if (moves.Count > 0 && timer >= TICK_TIME)
         {
             timer = 0;
             Move move = moves.Dequeue();
-            Light.ClearAllTiles();
+            lights.ClearAllTiles();
             OnTick.Invoke(move);
             AlterScore(-50);
             Debug.Log("Score: " + Score);
@@ -73,21 +70,21 @@ public class LevelController : MonoBehaviour
     private void ValidateTilemaps()
     {
         bool hasFail = false;
-        hasFail |= (Light.origin != Environment.origin);
-        hasFail |= (Light.cellBounds != Environment.cellBounds);
+        hasFail |= (lights.origin != environment.origin);
+        hasFail |= (lights.cellBounds != environment.cellBounds);
         if (hasFail) throw new ArgumentException("tilemaps are not matching");
     }
 
     public Vector3 GridToWorldPos(Vector2Int pos)
     {
-        Vector3 world = Environment.CellToWorld(DenormalizeGrid(pos));
+        Vector3 world = environment.CellToWorld(DenormalizeGrid(pos));
         world.z = 0;
         return world;
     }
 
     public Vector2Int WorldToGridPos(Vector3 world)
     {
-        Vector3Int grid = Environment.WorldToCell(new Vector3(world.x, world.y, 0));
+        Vector3Int grid = environment.WorldToCell(new Vector3(world.x, world.y, 0));
         return NormalizeGrid(grid);
     }
 
@@ -99,33 +96,30 @@ public class LevelController : MonoBehaviour
 
     public bool IsTileSolid(Vector2Int pos)
     {
-        Tile tile = TileAt(Environment, pos);
+        Tile tile = TileAt(environment, pos);
         if (tile == null) return true;
         return tile.colliderType == Tile.ColliderType.Grid;
     }
 
     public bool IsLightTile(Vector2Int pos)
     {
-        return TileAt(Light, pos) != null;
+        return TileAt(lights, pos) != null;
     }
 
     public void ShineLight(Vector2Int pos, Vector2Int direction)
     {
         Vector2Int targetPos = pos + direction;
         Debug.Log(string.Format("Light at: {0}, {1} from {2}, {3}", targetPos.x, targetPos.y, pos.x, pos.y));
-        Light.SetTile(DenormalizeGrid(targetPos), LightTile);
+        lights.SetTile(DenormalizeGrid(targetPos), LightTile);
     }
 
-    private void OnRecognition(PhraseRecognizedEventArgs args)
+    private void OnCommand(string command)
     {
-        if (!PauseScreen.activeSelf)
+        List<Move> nextMoves = parser.Parse(command);
+
+        if (nextMoves != null)
         {
-            string command = args.text;
-            Debug.Log(string.Format("Command: '{0}'", command));
-
-
             commandText.SetText(command);
-            List<Move> nextMoves = parser.Parse(command);
 
             foreach (Move move in nextMoves)
             {
@@ -140,10 +134,6 @@ public class LevelController : MonoBehaviour
         scoreText.SetText(Score.ToString());
     }
 
-    void OnEnable() => recognizer.Start();
-    void OnDisable() => recognizer.Stop();
-    void OnDestroy() => recognizer.Dispose();
-
-    private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + Environment.origin.x, n.y + Environment.origin.y, 0);
-    private Vector2Int NormalizeGrid(Vector3Int n) => new Vector2Int(n.x - Environment.origin.x, n.y - Environment.origin.y);
+    private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + environment.origin.x, n.y + environment.origin.y, 0);
+    private Vector2Int NormalizeGrid(Vector3Int n) => new Vector2Int(n.x - environment.origin.x, n.y - environment.origin.y);
 }

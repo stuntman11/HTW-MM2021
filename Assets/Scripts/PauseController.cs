@@ -10,49 +10,63 @@ public class PauseController : MonoBehaviour
     public GameObject PauseScreen;
     private KeywordRecognizer recognizer;
     
-
     private void Awake()
     {
-        string[] keywords = new string[] {"fortsetzen", "pause", "verlassen" };
+        string[] keywords = new string[] {"fortsetzen", "verlassen" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
         
+        Button btnResume = PauseScreen.transform.Find("ContinueBtn").GetComponent<Button>();
+        btnResume.onClick.AddListener(OnPauseToggle);
 
-        Button btnResume = GameObject.Find("Panel/ContinueBtn").gameObject.GetComponent<Button>();
-        btnResume.onClick.AddListener(onPauseToggle);
+        Button btnReturnToMenu = PauseScreen.transform.Find("ReturnToMenuBtn").GetComponent<Button>();
+        btnReturnToMenu.onClick.AddListener(ReturnToMenu);
 
-        Button btnReturnToMenu = GameObject.Find("Panel/ReturnToMenuBtn").gameObject.GetComponent<Button>();
-        btnReturnToMenu.onClick.AddListener(returnToMenu);
+        CommandController command = GetComponent<CommandController>();
+        command.OnCommand += OnCommand;
+
         PauseScreen.SetActive(false);
+    }
+
+    private void OnCommand(string command)
+    {
+        if (command.Equals("pause"))
+        {
+            recognizer.Start();
+            OnPauseToggle();
+        }
     }
 
     private void OnRecognition(PhraseRecognizedEventArgs args) {
         string command = args.text;
         Debug.Log(string.Format("Command: '{0}'", command));
-        if (command.Equals("pause")  || (command.Equals("fortsetzen") && PauseScreen.activeSelf)) onPauseToggle();
-        if (command.Equals("verlassen")) returnToMenu();
+
+        if (command.Equals("fortsetzen")) OnPauseToggle();
+        else if (command.Equals("verlassen")) ReturnToMenu();
     }
 
-     private void onPauseToggle()
+    private void OnPauseToggle()
     {
+        CommandController command = GetComponent<CommandController>();
         PauseScreen.SetActive(!PauseScreen.activeSelf);
+
         if (PauseScreen.activeSelf)
         {
+            command.PauseVoiceInput();
             Time.timeScale = 0;
         }
         else
         {
+            recognizer.Stop();
+            command.ResumeVoiceInput();
             Time.timeScale = 1;
         }
     }
 
-    private void returnToMenu()
+    private void ReturnToMenu()
     {
         SceneManager.LoadScene("MainMenu");
     }
 
-
-    void OnEnable() => recognizer.Start();
-    void OnDisable() => recognizer.Stop();
     void OnDestroy() => recognizer.Dispose();
 }

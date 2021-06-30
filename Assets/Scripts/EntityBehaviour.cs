@@ -8,7 +8,7 @@ public class EntityBehaviour : MonoBehaviour
     protected Vector2Int pos;
     protected Vector2Int lastPos;
 
-    void Awake()
+    void Start()
     {
         level = GameObject.Find("Controller").GetComponent<LevelController>();
         level.OnTick += OnLevelTick;
@@ -19,7 +19,7 @@ public class EntityBehaviour : MonoBehaviour
     {
         Vector3 current = level.GridToWorldPos(pos);
         Vector3 last = level.GridToWorldPos(lastPos);
-        transform.position = Vector3.Lerp(last, current, level.TickTime * 2);
+        transform.position = Vector3.Lerp(last, current, level.TickProgress * 2);
     }
 
     private void OnLevelTick(Move move)

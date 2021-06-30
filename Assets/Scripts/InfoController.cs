@@ -5,17 +5,22 @@ using UnityEngine.UI;
 
 public class InfoController : MonoBehaviour
 {
-    public Button InfoBtn;
-    public GameObject InfoList;
+    public GameObject InfoScreen;
+
+    private Button infoBtn;
+    private GameObject infoPopup;
 
     void Awake()
     {
-        InfoBtn.onClick.AddListener(OnInfoToggle);
-        InfoList.SetActive(false);
+        infoPopup = InfoScreen.transform.Find("InfoPopup").gameObject;
+        infoPopup.SetActive(false);
+
+        infoBtn = InfoScreen.transform.Find("InfoBtn").GetComponent<Button>();
+        infoBtn.onClick.AddListener(OnInfoToggle);
     }
 
     private void OnInfoToggle()
     {
-        InfoList.SetActive(!InfoList.activeSelf);
+        infoPopup.SetActive(!infoPopup.activeSelf);
     }
 }

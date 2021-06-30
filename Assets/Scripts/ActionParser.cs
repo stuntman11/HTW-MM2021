@@ -38,19 +38,26 @@ public class ActionParser
 
     public List<Move> Parse(string command)
     {
-        List<Move> moves = new List<Move>();
-        string[] subcommands = command.Split(' ');
-        int multiplier = 1;
-
-        foreach (string subcommand in subcommands)
+        try
         {
-            if (!FindMultiplier(subcommand, ref multiplier))
+            List<Move> moves = new List<Move>();
+            string[] subcommands = command.Split(' ');
+            int multiplier = 1;
+
+            foreach (string subcommand in subcommands)
             {
-                Move move = FindMove(subcommand);
-                for (int i = 0; i < multiplier; i++) moves.Add(move);
-                multiplier = 1;
+                if (!FindMultiplier(subcommand, ref multiplier))
+                {
+                    Move move = FindMove(subcommand);
+                    for (int i = 0; i < multiplier; i++) moves.Add(move);
+                    multiplier = 1;
+                }
             }
+            return moves;
         }
-        return moves;
+        catch
+        {
+            return null;
+        }
     }
 }
