@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EntityBehaviour : MonoBehaviour
 {
-    public const float ROT_EPSILON = 0.01f;
+    public static readonly float ROT_EPSILON = 0.01f;
 
     protected LevelController level;
     protected Vector2Int pos;

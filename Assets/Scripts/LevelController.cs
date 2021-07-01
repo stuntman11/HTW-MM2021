@@ -10,7 +10,7 @@ public class LevelController : MonoBehaviour
 {
     public delegate void LevelStartHandler();
     public delegate void TickEventHandler(Move move);
-    public const float TICK_TIME = 0.5f;
+    public static readonly float TICK_TIME = 0.5f;
 
     public float TickProgress
     {
