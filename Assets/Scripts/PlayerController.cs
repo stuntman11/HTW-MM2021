@@ -21,8 +21,8 @@ public class PlayerController : EntityBehaviour
         else if (move == Move.Right) moveDir = Vector2Int.right;
 
         if(moveDir != Vector2Int.zero) Rotate(moveDir);
-        bool hasMoved = TryMove(moveDir);
         
+        TryMove(moveDir);
     }
 
     private void OnAfterTick()

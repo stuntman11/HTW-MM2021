@@ -12,15 +12,17 @@ public class LevelController : MonoBehaviour
     public delegate void TickEventHandler(Move move);
     public delegate void AfterTickEventHandler();
     public const float TICK_TIME = 0.5f;
-    public int Score = 5000;
 
     public float TickProgress
     {
-       get { return timer * 1.0f / TICK_TIME;  }
+       get { return Mathf.Clamp01(timer * 1.0f / TICK_TIME);  }
     }
 
     public GameObject Map;
+    public GameObject EmptyTilemap;
     public TileBase LightTile;
+
+    public int Score;
 
     public event TickEventHandler OnTick;
     public event AfterTickEventHandler OnAfterTick;
@@ -31,6 +33,7 @@ public class LevelController : MonoBehaviour
 
     private Tilemap environment;
     private Tilemap lights;
+    private Tilemap paths;
 
     private TextMeshProUGUI commandText;
     private TextMeshProUGUI scoreText;
@@ -38,8 +41,12 @@ public class LevelController : MonoBehaviour
     void Awake()
     {
         environment = Map.transform.Find("Environment").GetComponent<Tilemap>();
-        lights = Map.transform.Find("Light").GetComponent<Tilemap>();
-        ValidateTilemaps();
+
+        lights = Instantiate(EmptyTilemap, Map.transform).GetComponent<Tilemap>();
+        lights.name = "Light";
+
+        paths = Instantiate(EmptyTilemap, Map.transform).GetComponent<Tilemap>();
+        paths.name = "Paths";
 
         commandText = GameObject.Find("Command").GetComponent<TextMeshProUGUI>();
         commandText.SetText("");
@@ -94,6 +101,12 @@ public class LevelController : MonoBehaviour
         return tilemap.GetTile<Tile>(grid);
     }
 
+    public void SetTile(Tilemap tilemap, Vector2Int pos, TileBase tile)
+    {
+        Vector3Int grid = DenormalizeGrid(pos);
+        tilemap.SetTile(grid, tile);
+    }
+
     public bool IsTileSolid(Vector2Int pos)
     {
         Tile tile = TileAt(environment, pos);
@@ -109,8 +122,7 @@ public class LevelController : MonoBehaviour
     public void ShineLight(Vector2Int pos, Vector2Int direction)
     {
         Vector2Int targetPos = pos + direction;
-        Debug.Log(string.Format("Light at: {0}, {1} from {2}, {3}", targetPos.x, targetPos.y, pos.x, pos.y));
-        lights.SetTile(DenormalizeGrid(targetPos), LightTile);
+        SetTile(lights, targetPos, LightTile);
     }
 
     private void OnCommand(string command)
