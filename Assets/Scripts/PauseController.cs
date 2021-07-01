@@ -12,14 +12,14 @@ public class PauseController : MonoBehaviour
     
     private void Awake()
     {
-        string[] keywords = new string[] {"fortsetzen", "verlassen" };
+        string[] keywords = new string[] { "fortsetzen", "verlassen" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
         
         Button btnResume = PauseScreen.transform.Find("ContinueBtn").GetComponent<Button>();
         btnResume.onClick.AddListener(OnPauseToggle);
 
-        Button btnReturnToMenu = PauseScreen.transform.Find("ReturnToMenuBtn").GetComponent<Button>();
+        Button btnReturnToMenu = PauseScreen.transform.Find("ReturnBtn").GetComponent<Button>();
         btnReturnToMenu.onClick.AddListener(ReturnToMenu);
 
         CommandController command = GetComponent<CommandController>();
