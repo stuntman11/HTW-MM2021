@@ -251,8 +251,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Map: {fileID: 1655247705}
   EmptyTilemap: {fileID: 339960886687831646, guid: 0f50349f896a754428a771ce42291037, type: 3}
+  Player: {fileID: 935608937}
   LightTile: {fileID: 11400000, guid: 02bf667c23d509643bcb814f532cc023, type: 2}
-  Score: 5000
+  InitialScore: 5000
 --- !u!4 &256859580
 Transform:
   m_ObjectHideFlags: 0
@@ -4430,7 +4431,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 935608933}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -18.68, y: -8.66, z: 0}
+  m_LocalPosition: {x: -19.08, y: -8.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4893,7 +4894,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1370805279}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3, y: -2.74, z: 0}
+  m_LocalPosition: {x: 1.24, y: -3.68, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4911,7 +4912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 057aa35b1b5cb5647bb373f0f1ed0cad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Length: 5
+  Length: 3
 --- !u!1 &1440698753
 GameObject:
   m_ObjectHideFlags: 0

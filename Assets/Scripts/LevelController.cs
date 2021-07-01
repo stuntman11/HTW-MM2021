@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class LevelController : MonoBehaviour
@@ -19,16 +19,18 @@ public class LevelController : MonoBehaviour
 
     public GameObject Map;
     public GameObject EmptyTilemap;
+    public Transform Player;
     public TileBase LightTile;
 
-    public int Score;
+    public int InitialScore;
 
     public event LevelStartHandler OnStart;
     public event TickEventHandler OnTick;
 
     private Queue<Move> moves = new Queue<Move>();
-    private float timer = 0;
     private ActionParser parser = new ActionParser();
+    private float timer = 0;
+    private int score;
 
     private Tilemap environment;
     private Tilemap lights;
@@ -41,6 +43,8 @@ public class LevelController : MonoBehaviour
 
     void Awake()
     {
+        score = InitialScore;
+
         environment = Map.transform.Find("Environment").GetComponent<Tilemap>();
 
         lights = Instantiate(EmptyTilemap, Map.transform).GetComponent<Tilemap>();
@@ -53,7 +57,7 @@ public class LevelController : MonoBehaviour
         commandText.SetText("");
 
         scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
-        scoreText.SetText(Score.ToString());
+        scoreText.SetText(score.ToString());
 
         CommandController command = GetComponent<CommandController>();
         command.OnCommand += OnCommand;
@@ -82,15 +86,16 @@ public class LevelController : MonoBehaviour
             timer = 0;
             Move move = moves.Dequeue();
             OnTick?.Invoke(move);
-            AlterScore(-50);
+            ChangeScoreBy(-50);
             RecalculateLight();
+            CheckGameLost();
         }
     }
 
     public Vector3 GridToWorldPos(Vector2Int pos)
     {
         Vector3 world = environment.GetCellCenterWorld(DenormalizeGrid(pos));
-        world.z = 0;
+        world.z = -2;
         return world;
     }
 
@@ -158,6 +163,17 @@ public class LevelController : MonoBehaviour
         }
     }
 
+    private void CheckGameLost()
+    {
+        EntityBehaviour player = Player.GetComponent<EntityBehaviour>();
+        TileBase lightTile = TileAt(lights, player.Pos);
+
+        if (lightTile != null || score == 0)
+        {
+            SceneManager.LoadScene("GameOverScreen");
+        }
+    }
+
     private void OnCommand(string command)
     {
         List<Move> nextMoves = parser.Parse(command);
@@ -173,10 +189,10 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    public void AlterScore(int changeValue)
+    public void ChangeScoreBy(int change)
     {
-        Score = Mathf.Max(Score + changeValue, 0);
-        scoreText.SetText(Score.ToString());
+        score = Mathf.Max(score + change, 0);
+        scoreText.SetText(score.ToString());
     }
 
     private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + environment.origin.x, n.y + environment.origin.y, 0);

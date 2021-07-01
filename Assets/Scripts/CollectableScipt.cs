@@ -8,8 +8,7 @@ public class CollectableScipt : EntityBehaviour
 
     protected void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Collided");
-        GameObject.Destroy(gameObject);
-        level.AlterScore(CollectableValue);
+        Destroy(gameObject);
+        level.ChangeScoreBy(CollectableValue);
     }
 }

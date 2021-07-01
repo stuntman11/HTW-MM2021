@@ -9,6 +9,6 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         Vector2 nextPos = Vector2.Lerp(transform.position, target.position, Time.deltaTime);
-        transform.position = new Vector3(nextPos.x, nextPos.y, -1);
+        transform.position = new Vector3(nextPos.x, nextPos.y, -5);
     }
 }
