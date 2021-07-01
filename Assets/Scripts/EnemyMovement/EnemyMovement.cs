@@ -18,7 +18,8 @@ public class EnemyMovement : EntityBehaviour
 
     protected override void OnStart()
     {
-        StartAt(waypoints[0]);
+        base.OnStart();
+        SetPosition(waypoints[0]);
     }
 
     protected override void OnTick(Move move)
@@ -41,9 +42,6 @@ public class EnemyMovement : EntityBehaviour
         }
         int nextTargetIndex = Mathf.Clamp(targetIndex, 0, waypoints.Count - 1);
         targetWaypoint = waypoints[nextTargetIndex];
-        Vector2Int rotation = RotateTowards(targetWaypoint);
         MoveTowards(targetWaypoint);
-        level.ShineLight(pos, rotation);
-        level.ShineLight(pos + rotation, rotation);
     }
 }

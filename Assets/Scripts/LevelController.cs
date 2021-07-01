@@ -1,16 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Windows.Speech;
-using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using TMPro;
 
 public class LevelController : MonoBehaviour
 {
+    public delegate void LevelStartHandler();
     public delegate void TickEventHandler(Move move);
-    public delegate void AfterTickEventHandler();
     public const float TICK_TIME = 0.5f;
 
     public float TickProgress
@@ -24,8 +23,8 @@ public class LevelController : MonoBehaviour
 
     public int Score;
 
+    public event LevelStartHandler OnStart;
     public event TickEventHandler OnTick;
-    public event AfterTickEventHandler OnAfterTick;
 
     private Queue<Move> moves = new Queue<Move>();
     private float timer = 0;
@@ -37,6 +36,8 @@ public class LevelController : MonoBehaviour
 
     private TextMeshProUGUI commandText;
     private TextMeshProUGUI scoreText;
+
+    private List<EntityBehaviour> lightEmitter = new List<EntityBehaviour>();
 
     void Awake()
     {
@@ -58,6 +59,20 @@ public class LevelController : MonoBehaviour
         command.OnCommand += OnCommand;
     }
 
+    void Start()
+    {
+        OnStart?.Invoke();
+
+        foreach (EntityBehaviour entity in FindObjectsOfType<EntityBehaviour>())
+        {
+            if (entity.GetComponent<ILightStrategy>() != null)
+            {
+                lightEmitter.Add(entity);
+            }
+        }
+        RecalculateLight();
+    }
+
     void Update()
     {
         timer += Time.deltaTime;
@@ -66,20 +81,10 @@ public class LevelController : MonoBehaviour
         {
             timer = 0;
             Move move = moves.Dequeue();
-            lights.ClearAllTiles();
-            OnTick.Invoke(move);
+            OnTick?.Invoke(move);
             AlterScore(-50);
-            Debug.Log("Score: " + Score);
-            OnAfterTick.Invoke();
+            RecalculateLight();
         }
-    }
-
-    private void ValidateTilemaps()
-    {
-        bool hasFail = false;
-        hasFail |= (lights.origin != environment.origin);
-        hasFail |= (lights.cellBounds != environment.cellBounds);
-        if (hasFail) throw new ArgumentException("tilemaps are not matching");
     }
 
     public Vector3 GridToWorldPos(Vector2Int pos)
@@ -101,7 +106,7 @@ public class LevelController : MonoBehaviour
         return tilemap.GetTile<Tile>(grid);
     }
 
-    public void SetTile(Tilemap tilemap, Vector2Int pos, TileBase tile)
+    private void SetTile(Tilemap tilemap, Vector2Int pos, TileBase tile)
     {
         Vector3Int grid = DenormalizeGrid(pos);
         tilemap.SetTile(grid, tile);
@@ -111,18 +116,46 @@ public class LevelController : MonoBehaviour
     {
         Tile tile = TileAt(environment, pos);
         if (tile == null) return true;
-        return tile.colliderType == Tile.ColliderType.Grid;
+        return tile.colliderType != Tile.ColliderType.None;
     }
 
-    public bool IsLightTile(Vector2Int pos)
+    private void RecalculateLight()
     {
-        return TileAt(lights, pos) != null;
+        lights.ClearAllTiles();
+
+        foreach (EntityBehaviour emitter in lightEmitter)
+        {
+            ILightStrategy strategy = emitter.GetComponent<ILightStrategy>();
+            List<Vector4> rays = strategy.CalculateRays(emitter.Direction);
+            foreach (Vector4 ray in rays) LightTrace(emitter.Pos, ray);
+        }
     }
 
-    public void ShineLight(Vector2Int pos, Vector2Int direction)
+    private void LightTrace(Vector2Int origin, Vector4 lightRay)
     {
-        Vector2Int targetPos = pos + direction;
-        SetTile(lights, targetPos, LightTile);
+        float x = lightRay.x;
+        float y = lightRay.y;
+        float dx = lightRay.z - lightRay.x;
+        float dy = lightRay.w - lightRay.y;
+        int i = 0;
+        float step;
+
+        if (Math.Abs(dx) >= Math.Abs(dy)) step = Math.Abs(dx);
+        else step = Math.Abs(dy);
+
+        dx /= step;
+        dy /= step;
+
+        while (i++ <= step)
+        {
+            Vector2Int offset = new Vector2Int((int)x, (int)y);
+            Vector2Int lightPos = origin + offset;
+            bool isSolid = IsTileSolid(lightPos);
+            if (isSolid) break;
+            SetTile(lights, lightPos, LightTile);
+            x += dx;
+            y += dy;
+        }
     }
 
     private void OnCommand(string command)
