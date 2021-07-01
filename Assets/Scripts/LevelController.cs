@@ -77,7 +77,7 @@ public class LevelController : MonoBehaviour
 
     public Vector3 GridToWorldPos(Vector2Int pos)
     {
-        Vector3 world = environment.CellToWorld(DenormalizeGrid(pos));
+        Vector3 world = environment.GetCellCenterWorld(DenormalizeGrid(pos));
         world.z = 0;
         return world;
     }
