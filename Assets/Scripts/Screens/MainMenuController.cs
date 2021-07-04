@@ -17,6 +17,7 @@ public class MainMenuController : MonoBehaviour
 
         Button btnLoad = GameObject.Find("BtnLoad").GetComponent<Button>();
         btnLoad.onClick.AddListener(Load);
+        btnLoad.interactable = MakeNoSound.HasSaveState;
 
         Button btnExit = GameObject.Find("BtnExit").GetComponent<Button>();
         btnExit.onClick.AddListener(Exit);
@@ -43,8 +44,11 @@ public class MainMenuController : MonoBehaviour
 
     private void Load()
     {
-        MakeNoSound.LoadSave();
-        SceneManager.LoadScene("LevelSelection");
+        if (MakeNoSound.HasSaveState)
+        {
+            MakeNoSound.LoadSave();
+            SceneManager.LoadScene("LevelSelection");
+        }
     }
 
     void OnEnable() => recognizer.Start();

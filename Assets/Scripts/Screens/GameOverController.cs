@@ -32,7 +32,7 @@ public class GameOverController : MonoBehaviour
 
     private void Restart()
     {
-        MakeNoSound.LoadLevel(MakeNoSound.Level);
+        MakeNoSound.LoadLevel(MakeNoSound.ActiveLevel);
     }
 
     private void Return()

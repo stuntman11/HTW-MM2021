@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<grammar xmlns="http://www.w3.org/2001/06/grammar" xml:lang="de" version="1.0" mode="voice" root="selection">
+	<rule id="selection">
+		<one-of>
+			<item><ruleref uri="#numeric"/></item>
+			<item>
+				<item>Level</item>
+				<ruleref uri="#numeric"/>
+			</item>
+			<item>zurück</item>
+		</one-of>
+	</rule>
+	<rule id="numeric">
+		<one-of>
+			<item>eins</item>
+			<item>zwei</item>
+			<item>drei</item>
+			<item>vier</item>
+			<item>fünf</item>
+			<item>sechs</item>
+			<item>sieben</item>
+			<item>acht</item>
+			<item>neun</item>
+		</one-of>
+	</rule>
+</grammar>

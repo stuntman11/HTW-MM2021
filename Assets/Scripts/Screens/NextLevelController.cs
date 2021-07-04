@@ -9,23 +9,34 @@ public class NextLevelController : MonoBehaviour
 {
     private KeywordRecognizer recognizer;
     
-    private void Awake()
+    void Awake()
     {
         string[] keywords = new string[] { "weiter, zurück" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
 
-        Text highScoreText = GameObject.Find("HighscoreText").GetComponent<Text>();
-        highScoreText.text = "Best Score of Level " + (MakeNoSound.Level + 1).ToString() + ": " + MakeNoSound.GetHighscore(MakeNoSound.Level);
+        int level = MakeNoSound.ActiveLevel;
+        int levelScore = MakeNoSound.Score;
+        int lastHighscore = MakeNoSound.GetHighscore(MakeNoSound.ActiveLevel);
+        MakeNoSound.FinishLevel();
+
+        Text finishedText = GameObject.Find("LevelFinishedText").GetComponent<Text>();
+        finishedText.text = string.Format("Level {0} Finished", level + 1);
+
+        Text scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+        string highscoreTxt = "---";
+
+        if (levelScore > lastHighscore) highscoreTxt = string.Format("{0} (Last: {1})", levelScore, lastHighscore);
+        else if (lastHighscore > 0) highscoreTxt = lastHighscore.ToString();
+
+        scoreText.text = string.Format("Dein Score: {0}\n\nHighscore: {1}", levelScore, highscoreTxt);
 
         Button nextLevelBtn = GameObject.Find("NextLvlButton").GetComponent<Button>();
         nextLevelBtn.onClick.AddListener(EnterNextLevel);
+        nextLevelBtn.interactable = MakeNoSound.HasNextLevel;
 
         Button exitButton = GameObject.Find("QuitButton").GetComponent<Button>();
         exitButton.onClick.AddListener(Exit);
-
-        MakeNoSound.AdvanceLevel();
-
     }
 
     private void OnRecognition(PhraseRecognizedEventArgs args)
@@ -44,11 +55,6 @@ public class NextLevelController : MonoBehaviour
 
     private void EnterNextLevel()
     {
-        int nextLevel = MakeNoSound.Level;
-
-        if (nextLevel < MakeNoSound.LevelCount)
-        {
-            MakeNoSound.LoadLevel(nextLevel);
-        }
+        MakeNoSound.LoadLevel(MakeNoSound.ActiveLevel);
     }
 }

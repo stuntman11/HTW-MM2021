@@ -7,41 +7,60 @@ using UnityEngine.SceneManagement;
 public static class MakeNoSound
 {
     public static readonly string SaveStatePath = Application.streamingAssetsPath + "/save.bin";
-    public static readonly int LevelCount = 5;
+    public static readonly int LevelCount = 2;
 
     public static int Score = 0;
-    private static int[] highscores = new int[LevelCount];
-    private static int level = -1;
 
-    public static int Level
+    private static int[] highscores;
+    private static int unlockedLevels = -1;
+    private static int activeLevel = -1;
+
+    public static int UnlockedLevels
     {
-        get { return level; }
+        get { return unlockedLevels; }
+    }
+
+    public static int ActiveLevel
+    {
+        get { return activeLevel; }
+    }
+
+    public static bool HasNextLevel
+    {
+        get { return activeLevel < LevelCount; }
     }
 
     public static bool HasSaveState
     {
-        get { return level != -1; }
+        get { return File.Exists(SaveStatePath); }
     }
 
     public static void LoadSave()
     {
         using FileStream stream = File.OpenRead(SaveStatePath);
         using BinaryReader reader = new BinaryReader(stream);
-        level = reader.ReadInt32();
-
+        unlockedLevels = reader.ReadInt32();
+        highscores = new int[LevelCount];
 
         for (int i = 0; i < LevelCount; i++)
         {
             highscores[i] = reader.ReadInt32();
         }
-        LoadLevel(level);
     }
 
-    public static void WriteSave()
+    public static void NewSave()
+    {
+        unlockedLevels = 0;
+        highscores = new int[LevelCount];
+        WriteSave();
+        LoadLevel(0);
+    }
+
+    private static void WriteSave()
     {
         using FileStream stream = File.OpenWrite(SaveStatePath);
         using BinaryWriter writer = new BinaryWriter(stream);
-        writer.Write(level);
+        writer.Write(unlockedLevels);
 
         for (int i = 0; i < LevelCount; i++)
         {
@@ -49,33 +68,26 @@ public static class MakeNoSound
         }
     }
 
-    public static void NewSave()
-    {
-        level = 0;
-        highscores = new int[LevelCount];
-        WriteSave();
-        LoadLevel(level);
-    }
-
     public static void LoadLevel(int level)
     {
+        activeLevel = level;
         SceneManager.LoadScene("Level" + (level + 1).ToString());
-    }
-
-    public static void SetHighscore(int level, int highscore)
-    {
-        highscores[level] = highscore;
     }
 
     public static int GetHighscore(int level)
     {
-        if (highscores.Length < level) return 0;
+        if (level >= LevelCount) return 0;
         return highscores[level];
     }
 
-    public static void AdvanceLevel()
+    public static void FinishLevel()
     {
-        level++;
+        if (highscores[activeLevel] < Score)
+        {
+            highscores[activeLevel] = Score;
+        }
+        activeLevel++;
+        unlockedLevels = Mathf.Max(activeLevel, unlockedLevels);
         WriteSave();
     }
 }
