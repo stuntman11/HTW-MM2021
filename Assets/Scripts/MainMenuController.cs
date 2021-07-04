@@ -11,15 +11,18 @@ public class MainMenuController : MonoBehaviour
 
     void Awake()
     {
-        string[] keywords = new string[] { "laden", "beenden" };
+        string[] keywords = new string[] { "laden", "beenden", "neu" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
 
         Button btnLoad = GameObject.Find("BtnLoad").GetComponent<Button>();
-        btnLoad.onClick.AddListener(Load);
+        btnLoad.onClick.AddListener(MakeNoSound.LoadSave);
 
         Button btnExit = GameObject.Find("BtnExit").GetComponent<Button>();
         btnExit.onClick.AddListener(Exit);
+
+        Button btnNew = GameObject.Find("BtnNew").GetComponent<Button>();
+        btnNew.onClick.AddListener(MakeNoSound.NewSave);
     }
 
     private void OnRecognition(PhraseRecognizedEventArgs args)
@@ -28,12 +31,8 @@ public class MainMenuController : MonoBehaviour
         Debug.Log(string.Format("Command: '{0}'", command));
 
         if (command.Equals("beenden")) Exit();
-        else if (command.Equals("laden")) Load();
-    }
-
-    private void Load()
-    {
-        SceneManager.LoadScene("Level1");
+        else if (command.Equals("laden")) MakeNoSound.LoadSave();
+        else if (command.Equals("neu")) MakeNoSound.NewSave();
     }
 
     private void Exit()
