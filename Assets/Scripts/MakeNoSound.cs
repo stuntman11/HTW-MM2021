@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class GameManager
 {
-    public static readonly string SaveStatePath = Application.streamingAssetsPath + "/save.xml";
+    public static readonly string SaveStatePath = Application.streamingAssetsPath + "/save.bin";
     public static readonly int LevelCount = 5;
 
     private static int[] highscores = new int[LevelCount];
@@ -23,15 +23,25 @@ public static class GameManager
 
     public static void LoadSave()
     {
-        using (FileStream stream = File.OpenRead(SaveStatePath))
-        using (BinaryReader reader = new BinaryReader(stream))
-        {
-            level = reader.ReadInt32();
+        using FileStream stream = File.OpenRead(SaveStatePath);
+        using BinaryReader reader = new BinaryReader(stream);
+        level = reader.ReadInt32();
 
-            for (int i = 0; i < LevelCount; i++)
-            {
-                highscores[i] = reader.ReadInt32();
-            }
+        for (int i = 0; i < LevelCount; i++)
+        {
+            highscores[i] = reader.ReadInt32();
+        }
+    }
+
+    public static void WriteSave()
+    {
+        using FileStream stream = File.OpenWrite(SaveStatePath);
+        using BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write(level);
+
+        for (int i = 0; i < LevelCount; i++)
+        {
+            writer.Write(highscores[i]);
         }
     }
 
@@ -39,17 +49,7 @@ public static class GameManager
     {
         level = 0;
         highscores = new int[LevelCount];
-
-        using (FileStream stream = File.OpenWrite(SaveStatePath))
-        using (BinaryWriter writer = new BinaryWriter(stream))
-        {
-            writer.Write(level);
-
-            for (int i = 0; i < LevelCount; i++)
-            {
-                writer.Write(highscores[i]);
-            }
-        }
+        WriteSave();
     }
 
     public static void SetHighscore(int level, int highscore)

@@ -21,6 +21,7 @@ public class LevelController : MonoBehaviour
     public GameObject EmptyTilemap;
     public Transform Player;
     public TileBase LightTile;
+    public TileBase PathTile;
 
     public int InitialScore;
 

@@ -253,6 +253,7 @@ MonoBehaviour:
   EmptyTilemap: {fileID: 339960886687831646, guid: 0f50349f896a754428a771ce42291037, type: 3}
   Player: {fileID: 935608937}
   LightTile: {fileID: 11400000, guid: 02bf667c23d509643bcb814f532cc023, type: 2}
+  PathTile: {fileID: 0}
   InitialScore: 5000
 --- !u!4 &256859580
 Transform:
@@ -4808,6 +4809,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1370805282}
   - component: {fileID: 1370805281}
+  - component: {fileID: 1370805284}
   - component: {fileID: 1370805280}
   - component: {fileID: 1370805283}
   m_Layer: 0
@@ -4826,11 +4828,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1370805279}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cd8871f4a21cf143826a1c8ffad11b2, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f9288c13b61ad2498430a5749a4a878, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathType: 1
-  waypoints:
+  Waypoints:
   - {x: 13, y: 2}
   - {x: 13, y: 5}
   - {x: 9, y: 5}
@@ -4913,6 +4914,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Length: 3
+--- !u!114 &1370805284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370805279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a40e03146faad74198c75672c769e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1440698753
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,10 +31,7 @@ public class EntityBehaviour : MonoBehaviour
     protected virtual void OnStart()
     {
         SetPosition(level.WorldToGridPos(transform.position));
-
-        float rad = Mathf.Deg2Rad * (transform.rotation.z + 90);
-        Vector2 rotation = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
-        direction = GetUnitDirection(rotation);
+        direction = GridUtils.UnitDirection(transform.rotation.z);
     }
 
     void Update()
@@ -50,41 +47,21 @@ public class EntityBehaviour : MonoBehaviour
         OnTick(move);
     }
 
-    protected Vector2Int GetUnitDirection(Vector2 direction)
-    {
-        Vector2Int unitDirection = new Vector2Int();
-
-        if (direction.x > ROT_EPSILON) unitDirection.x = 1;
-        else if (direction.x < -ROT_EPSILON) unitDirection.x = -1;
-        else if (direction.y > ROT_EPSILON) unitDirection.y = 1;
-        else if (direction.y < -ROT_EPSILON) unitDirection.y = -1;
-
-        return unitDirection;
-    }
-
-    protected Vector2Int GetDirectionTowards(Vector2Int targetPos)
-    {
-        Vector2Int direction = targetPos - pos;
-        return GetUnitDirection(direction);
-    }
-
     protected void RotateTo(Vector2Int direction)
     {
         this.direction = direction;
-        float angle = Mathf.Atan2(direction.y, direction.x);
-        float degrees = Mathf.Rad2Deg * angle - 90;
+        float degrees = GridUtils.GetAngle(direction);
         transform.rotation = Quaternion.Euler(0, 0, degrees);
     }
 
     protected void RotateTowards(Vector2Int targetPos)
     {
-        Vector2Int direction = GetDirectionTowards(targetPos);
-        RotateTo(direction);
+        RotateTo(GridUtils.UnitDirection(pos, targetPos));
     }
 
     protected void MoveTowards(Vector2Int targetPos)
     {
-        Vector2Int direction = GetDirectionTowards(targetPos);
+        Vector2Int direction = GridUtils.UnitDirection(pos, targetPos);
         pos += direction;
         RotateTo(direction);
     }
