@@ -34,7 +34,6 @@ public static class MakeNoSound
         {
             highscores[i] = reader.ReadInt32();
         }
-        Debug.Log(string.Format("After Loading: Current Level: {0} Current Highscore: {1}", level, highscores));
         LoadLevel(level);
     }
 
@@ -48,7 +47,6 @@ public static class MakeNoSound
         {
             writer.Write(highscores[i]);
         }
-        Debug.Log(string.Format("After Writing: Current Level: {0} Current Highscore: {1}", level, highscores));
     }
 
     public static void NewSave()

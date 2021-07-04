@@ -170,7 +170,7 @@ public class LevelController : MonoBehaviour
 
         if (lightTile != null || MakeNoSound.Score == 0)
         {
-            SceneManager.LoadScene("GameOverScreen");
+            SceneManager.LoadScene("GameOver");
         }
     }
 
