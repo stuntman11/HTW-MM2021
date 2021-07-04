@@ -31,7 +31,6 @@ public class LevelController : MonoBehaviour
     private Queue<Move> moves = new Queue<Move>();
     private ActionParser parser = new ActionParser();
     private float timer = 0;
-    private int score;
 
     private Tilemap environment;
     private Tilemap lights;
@@ -44,7 +43,7 @@ public class LevelController : MonoBehaviour
 
     void Awake()
     {
-        score = InitialScore;
+        MakeNoSound.Score = InitialScore;
 
         environment = Map.transform.Find("Environment").GetComponent<Tilemap>();
 
@@ -58,7 +57,7 @@ public class LevelController : MonoBehaviour
         commandText.SetText("");
 
         scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
-        scoreText.SetText(score.ToString());
+        scoreText.SetText(MakeNoSound.Score.ToString());
 
         CommandController command = GetComponent<CommandController>();
         command.OnCommand += OnCommand;
@@ -169,7 +168,7 @@ public class LevelController : MonoBehaviour
         EntityBehaviour player = Player.GetComponent<EntityBehaviour>();
         TileBase lightTile = TileAt(lights, player.Pos);
 
-        if (lightTile != null || score == 0)
+        if (lightTile != null || MakeNoSound.Score == 0)
         {
             SceneManager.LoadScene("GameOverScreen");
         }
@@ -192,8 +191,8 @@ public class LevelController : MonoBehaviour
 
     public void ChangeScoreBy(int change)
     {
-        score = Mathf.Max(score + change, 0);
-        scoreText.SetText(score.ToString());
+        MakeNoSound.Score = Mathf.Max(MakeNoSound.Score + change, 0);
+        scoreText.SetText(MakeNoSound.Score.ToString());
     }
 
     private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + environment.origin.x, n.y + environment.origin.y, 0);

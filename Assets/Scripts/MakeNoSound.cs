@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public static class GameManager
+public static class MakeNoSound
 {
     public static readonly string SaveStatePath = Application.streamingAssetsPath + "/save.bin";
     public static readonly int LevelCount = 5;
 
+    public static int Score = 0;
     private static int[] highscores = new int[LevelCount];
     private static int level = -1;
 
@@ -31,6 +33,7 @@ public static class GameManager
         {
             highscores[i] = reader.ReadInt32();
         }
+        LoadLevel(level);
     }
 
     public static void WriteSave()
@@ -50,6 +53,12 @@ public static class GameManager
         level = 0;
         highscores = new int[LevelCount];
         WriteSave();
+        LoadLevel(level);
+    }
+
+    public static void LoadLevel(int level)
+    {
+        SceneManager.LoadScene("Level" + (level + 1).ToString());
     }
 
     public static void SetHighscore(int level, int highscore)
