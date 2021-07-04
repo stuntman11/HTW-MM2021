@@ -16,7 +16,7 @@ public class MainMenuController : MonoBehaviour
         recognizer.OnPhraseRecognized += OnRecognition;
 
         Button btnLoad = GameObject.Find("BtnLoad").GetComponent<Button>();
-        btnLoad.onClick.AddListener(MakeNoSound.LoadSave);
+        btnLoad.onClick.AddListener(Load);
 
         Button btnExit = GameObject.Find("BtnExit").GetComponent<Button>();
         btnExit.onClick.AddListener(Exit);
@@ -31,7 +31,7 @@ public class MainMenuController : MonoBehaviour
         Debug.Log(string.Format("Command: '{0}'", command));
 
         if (command.Equals("beenden")) Exit();
-        else if (command.Equals("laden")) MakeNoSound.LoadSave();
+        else if (command.Equals("laden")) Load();
         else if (command.Equals("neu")) MakeNoSound.NewSave();
     }
 
@@ -39,6 +39,12 @@ public class MainMenuController : MonoBehaviour
     {
         UnityEditor.EditorApplication.ExitPlaymode();
         Application.Quit();
+    }
+
+    private void Load()
+    {
+        MakeNoSound.LoadSave();
+        SceneManager.LoadScene("LevelSelection");
     }
 
     void OnEnable() => recognizer.Start();

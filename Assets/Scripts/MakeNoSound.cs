@@ -29,10 +29,12 @@ public static class MakeNoSound
         using BinaryReader reader = new BinaryReader(stream);
         level = reader.ReadInt32();
 
+
         for (int i = 0; i < LevelCount; i++)
         {
             highscores[i] = reader.ReadInt32();
         }
+        Debug.Log(string.Format("After Loading: Current Level: {0} Current Highscore: {1}", level, highscores));
         LoadLevel(level);
     }
 
@@ -46,6 +48,7 @@ public static class MakeNoSound
         {
             writer.Write(highscores[i]);
         }
+        Debug.Log(string.Format("After Writing: Current Level: {0} Current Highscore: {1}", level, highscores));
     }
 
     public static void NewSave()
@@ -75,5 +78,6 @@ public static class MakeNoSound
     public static void AdvanceLevel()
     {
         level++;
+        WriteSave();
     }
 }
