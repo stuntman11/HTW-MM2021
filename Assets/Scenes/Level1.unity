@@ -253,7 +253,7 @@ MonoBehaviour:
   EmptyTilemap: {fileID: 339960886687831646, guid: 0f50349f896a754428a771ce42291037, type: 3}
   Player: {fileID: 935608937}
   LightTile: {fileID: 11400000, guid: 02bf667c23d509643bcb814f532cc023, type: 2}
-  PathTile: {fileID: 0}
+  PathTile: {fileID: 11400000, guid: 50a2d465613efb8469ebbcdf64523f35, type: 2}
   InitialScore: 5000
 --- !u!4 &256859580
 Transform:

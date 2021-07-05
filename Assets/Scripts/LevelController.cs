@@ -40,6 +40,7 @@ public class LevelController : MonoBehaviour
     private TextMeshProUGUI scoreText;
 
     private List<EntityBehaviour> lightEmitter = new List<EntityBehaviour>();
+    private List<MovingEnemy> movingEnemies = new List<MovingEnemy>();
 
     void Awake()
     {
@@ -69,12 +70,14 @@ public class LevelController : MonoBehaviour
 
         foreach (EntityBehaviour entity in FindObjectsOfType<EntityBehaviour>())
         {
-            if (entity.GetComponent<ILightStrategy>() != null)
-            {
-                lightEmitter.Add(entity);
-            }
+            ILightStrategy lightStrategy = entity.GetComponent<ILightStrategy>();
+            MovingEnemy movingEnemy = entity.GetComponent<MovingEnemy>();
+
+            if (lightStrategy != null) lightEmitter.Add(entity);
+            if (movingEnemy != null) movingEnemies.Add(movingEnemy);
         }
         RecalculateLight();
+        RecalculatePaths();
     }
 
     void Update()
@@ -88,6 +91,7 @@ public class LevelController : MonoBehaviour
             OnTick?.Invoke(move);
             ChangeScoreBy(-50);
             RecalculateLight();
+            RecalculatePaths();
             CheckGameLost();
         }
     }
@@ -124,6 +128,13 @@ public class LevelController : MonoBehaviour
         return tile.colliderType != Tile.ColliderType.None;
     }
 
+    public PathFinding Path(Vector2Int start, Vector2Int target)
+    {
+        PathFinding finding = new PathFinding(this, start, target);
+        finding.Execute();
+        return finding;
+    }
+
     private void RecalculateLight()
     {
         lights.ClearAllTiles();
@@ -133,6 +144,19 @@ public class LevelController : MonoBehaviour
             ILightStrategy strategy = emitter.GetComponent<ILightStrategy>();
             List<Vector4> rays = strategy.CalculateRays(emitter.GridDir);
             foreach (Vector4 ray in rays) LightTrace(emitter.GridPos, ray);
+        }
+    }
+
+    private void RecalculatePaths()
+    {
+        paths.ClearAllTiles();
+
+        foreach (MovingEnemy enemy in movingEnemies)
+        {
+            foreach (Vector2Int pos in enemy.Path)
+            {
+                SetTile(paths, pos, PathTile);
+            }
         }
     }
 
@@ -177,15 +201,12 @@ public class LevelController : MonoBehaviour
     private void OnCommand(string command)
     {
         List<Move> nextMoves = parser.Parse(command);
+        if (nextMoves == null) return;
+        commandText.SetText(command);
 
-        if (nextMoves != null)
+        foreach (Move move in nextMoves)
         {
-            commandText.SetText(command);
-
-            foreach (Move move in nextMoves)
-            {
-                moves.Enqueue(move);
-            }
+            moves.Enqueue(move);
         }
     }
 
