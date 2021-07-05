@@ -31,7 +31,7 @@ public class EntityBehaviour : MonoBehaviour
     protected virtual void OnStart()
     {
         SetPosition(level.WorldToGridPos(transform.position));
-        direction = GridUtils.UnitDirection(transform.rotation.z);
+        direction = GridUtils.UnitDirection(transform.rotation.eulerAngles.z);
     }
 
     void Update()

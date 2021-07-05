@@ -50,9 +50,11 @@ public class LevelController : MonoBehaviour
 
         lights = Instantiate(EmptyTilemap, Map.transform).GetComponent<Tilemap>();
         lights.name = "Light";
+        lights.transform.position = new Vector3(0, 0, -1);
 
         paths = Instantiate(EmptyTilemap, Map.transform).GetComponent<Tilemap>();
         paths.name = "Paths";
+        paths.transform.position = new Vector3(0, 0, -0.5f);
 
         commandText = GameObject.Find("Command").GetComponent<TextMeshProUGUI>();
         commandText.SetText("");
