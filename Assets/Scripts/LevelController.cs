@@ -131,8 +131,8 @@ public class LevelController : MonoBehaviour
         foreach (EntityBehaviour emitter in lightEmitter)
         {
             ILightStrategy strategy = emitter.GetComponent<ILightStrategy>();
-            List<Vector4> rays = strategy.CalculateRays(emitter.Direction);
-            foreach (Vector4 ray in rays) LightTrace(emitter.Pos, ray);
+            List<Vector4> rays = strategy.CalculateRays(emitter.GridDir);
+            foreach (Vector4 ray in rays) LightTrace(emitter.GridPos, ray);
         }
     }
 
@@ -166,7 +166,7 @@ public class LevelController : MonoBehaviour
     private void CheckGameLost()
     {
         EntityBehaviour player = Player.GetComponent<EntityBehaviour>();
-        TileBase lightTile = TileAt(lights, player.Pos);
+        TileBase lightTile = TileAt(lights, player.GridPos);
 
         if (lightTile != null || MakeNoSound.Score == 0)
         {

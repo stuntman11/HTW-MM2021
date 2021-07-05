@@ -24,11 +24,7 @@ public class NextLevelController : MonoBehaviour
         finishedText.text = string.Format("Level {0} Finished", level + 1);
 
         Text scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
-        string highscoreTxt = "---";
-
-        if (levelScore > lastHighscore) highscoreTxt = string.Format("{0} (Last: {1})", levelScore, lastHighscore);
-        else if (lastHighscore > 0) highscoreTxt = lastHighscore.ToString();
-
+        string highscoreTxt = FormatHighscore(levelScore, lastHighscore);
         scoreText.text = string.Format("Dein Score: {0}\n\nHighscore: {1}", levelScore, highscoreTxt);
 
         Button nextLevelBtn = GameObject.Find("NextLvlButton").GetComponent<Button>();
@@ -46,6 +42,15 @@ public class NextLevelController : MonoBehaviour
 
         if (command.Equals("zurück")) Exit();
         else if (command.Equals("weiter")) EnterNextLevel();
+    }
+
+    private string FormatHighscore(int score, int lastHighscore)
+    {
+        if (score > lastHighscore)
+        {
+            return string.Format("*{0} (Last: {1})", score, lastHighscore);
+        }
+        return lastHighscore.ToString();
     }
 
     private void Exit()

@@ -11,12 +11,12 @@ public class EntityBehaviour : MonoBehaviour
     protected Vector2Int lastPos;
     protected Vector2Int direction;
 
-    public Vector2Int Pos
+    public Vector2Int GridPos
     {
         get { return pos; }
     }
 
-    public Vector2Int Direction
+    public Vector2Int GridDir
     {
         get { return direction; }
     }
