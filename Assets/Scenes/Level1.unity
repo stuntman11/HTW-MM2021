@@ -437,6 +437,14 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 512951268}
+    - target: {fileID: 3497997724181322933, guid: 2f433d25402c5f74f827649e73ad86b1, type: 3}
+      propertyPath: InfoScreen
+      value: 
+      objectReference: {fileID: 1092153332}
+    - target: {fileID: 3497997724181322934, guid: 2f433d25402c5f74f827649e73ad86b1, type: 3}
+      propertyPath: PauseScreen
+      value: 
+      objectReference: {fileID: 523367148}
     - target: {fileID: 3497997724181322935, guid: 2f433d25402c5f74f827649e73ad86b1, type: 3}
       propertyPath: m_RootOrder
       value: 2
