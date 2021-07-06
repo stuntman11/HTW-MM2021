@@ -62,4 +62,8 @@ public class NextLevelController : MonoBehaviour
     {
         MakeNoSound.LoadLevel(MakeNoSound.ActiveLevel);
     }
+
+    void OnEnable() => recognizer.Start();
+    void OnDisable() => recognizer.Stop();
+    void OnDestroy() => recognizer.Dispose();
 }

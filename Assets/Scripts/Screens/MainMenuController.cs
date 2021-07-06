@@ -38,7 +38,7 @@ public class MainMenuController : MonoBehaviour
 
     private void Exit()
     {
-        UnityEditor.EditorApplication.ExitPlaymode();
+        //UnityEditor.EditorApplication.ExitPlaymode();
         Application.Quit();
     }
 

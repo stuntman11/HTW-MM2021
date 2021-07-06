@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public static class MakeNoSound
 {
     public static readonly string SaveStatePath = Application.streamingAssetsPath + "/save.bin";
-    public static readonly int LevelCount = 2;
+    public static readonly int LevelCount = 5;
 
     public static int Score = 0;
 
