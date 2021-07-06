@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Move { Up, Down, Left, Right, Wait };
+public enum Move { Up, Down, Left, Right, Wait, Lure };
 
 public class ActionParser
 {
     private readonly string[] MULTIPLIER = new string[]
     {
-        "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun"
+        "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun"
     };
 
     private bool FindMultiplier(string raw, ref int multiplier)
@@ -18,7 +18,7 @@ public class ActionParser
         {
             if (MULTIPLIER[i].Equals(raw))
             {
-                multiplier = 2 + i;
+                multiplier = 1 + i;
                 return true;
             }
         }
@@ -32,6 +32,7 @@ public class ActionParser
         else if (move.Equals("links")) return Move.Left;
         else if (move.Equals("rechts")) return Move.Right;
         else if (move.Equals("warten")) return Move.Wait;
+        else if (move.Equals("anlocken")) return Move.Lure;
 
         throw new ArgumentException("illegal action");
     }

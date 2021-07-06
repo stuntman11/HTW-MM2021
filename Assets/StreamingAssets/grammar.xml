@@ -20,6 +20,7 @@
 	</rule>
 	<rule id="multiplier">
 		<one-of>
+			<item>eins</item>
 			<item>zwei</item>
 			<item>drei</item>
 			<item>vier</item>
@@ -37,6 +38,7 @@
 			<item>links</item>
 			<item>rechts</item>
 			<item>warten</item>
+			<item>anlocken</item>
 		</one-of>
 	</rule>
 </grammar>

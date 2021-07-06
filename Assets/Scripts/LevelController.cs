@@ -202,6 +202,13 @@ public class LevelController : MonoBehaviour
 
     private void OnCommand(string command)
     {
+        if (command.Equals("stop"))
+        {
+            moves.Clear();
+            commandText.SetText(command);
+            return;
+        }
+
         List<Move> nextMoves = parser.Parse(command);
         if (nextMoves == null) return;
         commandText.SetText(command);
