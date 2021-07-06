@@ -13,8 +13,7 @@ public class PlayerController : EntityBehaviour
         else if (move == Move.Left) moveDir = Vector2Int.left;
         else if (move == Move.Right) moveDir = Vector2Int.right;
 
-        if(moveDir != Vector2Int.zero) RotateTo(moveDir);
-        
+        RotateTo(moveDir);
         TryMoveTowards(moveDir);
     }
 }

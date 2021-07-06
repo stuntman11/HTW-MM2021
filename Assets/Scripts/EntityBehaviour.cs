@@ -5,11 +5,15 @@ using UnityEngine;
 public class EntityBehaviour : MonoBehaviour
 {
     public static readonly float ROT_EPSILON = 0.01f;
+    public static readonly float JAMMER_LEN = 6;
+    public static readonly int JAMMER_TICKS = 8;
 
     protected LevelController level;
     protected Vector2Int pos;
     protected Vector2Int lastPos;
     protected Vector2Int direction;
+
+    private int dizzyTicks = 0;
 
     public Vector2Int GridPos
     {
@@ -19,6 +23,11 @@ public class EntityBehaviour : MonoBehaviour
     public Vector2Int GridDir
     {
         get { return direction; }
+    }
+
+    public bool IsDizzy
+    {
+        get { return dizzyTicks > 0; }
     }
 
     void Awake()
@@ -44,11 +53,21 @@ public class EntityBehaviour : MonoBehaviour
     private void OnLevelTick(Move move)
     {
         lastPos = pos;
+
+        if (move == Move.Activate)
+        {
+            if (GridUtils.DistanceBetween(level.PlayerPos, GridPos) <= JAMMER_LEN)
+            {
+                dizzyTicks = JAMMER_TICKS;
+            }
+        }
         OnTick(move);
+        dizzyTicks = Mathf.Max(dizzyTicks - 1, 0);
     }
 
     protected void RotateTo(Vector2Int direction)
     {
+        if (direction == Vector2Int.zero) return;
         this.direction = direction;
         float degrees = GridUtils.GetAngle(direction);
         transform.rotation = Quaternion.Euler(0, 0, degrees);
