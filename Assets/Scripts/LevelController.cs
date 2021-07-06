@@ -10,6 +10,7 @@ public class LevelController : MonoBehaviour
 {
     public delegate void LevelStartHandler();
     public delegate void TickEventHandler(Move move);
+    public delegate void AfterTickEventHandler();
     public static readonly float TICK_TIME = 0.5f;
 
     public float TickProgress
@@ -27,10 +28,13 @@ public class LevelController : MonoBehaviour
 
     public event LevelStartHandler OnStart;
     public event TickEventHandler OnTick;
+    public event AfterTickEventHandler OnAfterTick;
 
     private Queue<Move> moves = new Queue<Move>();
     private ActionParser parser = new ActionParser();
+    private bool hasTicked = false;
     private float timer = 0;
+    private int items = 0;
 
     private Tilemap environment;
     private Tilemap lights;
@@ -41,6 +45,11 @@ public class LevelController : MonoBehaviour
 
     private List<EntityBehaviour> lightEmitter = new List<EntityBehaviour>();
     private List<MovingEnemy> movingEnemies = new List<MovingEnemy>();
+
+    public Vector2Int PlayerPos
+    {
+        get { return Player.GetComponent<EntityBehaviour>().GridPos; }
+    }
 
     void Awake()
     {
@@ -86,15 +95,22 @@ public class LevelController : MonoBehaviour
     {
         timer += Time.deltaTime;
 
+        if (hasTicked && timer >= TICK_TIME)
+        {
+            hasTicked = false;
+            OnAfterTick?.Invoke();
+            CheckGameLost();
+        }
+
         if (moves.Count > 0 && timer >= TICK_TIME)
         {
             timer = 0;
+            hasTicked = true;
             Move move = moves.Dequeue();
             OnTick?.Invoke(move);
             ChangeScoreBy(-50);
             RecalculateLight();
             RecalculatePaths();
-            CheckGameLost();
         }
     }
 
@@ -223,6 +239,15 @@ public class LevelController : MonoBehaviour
     {
         MakeNoSound.Score = Mathf.Max(MakeNoSound.Score + change, 0);
         scoreText.SetText(MakeNoSound.Score.ToString());
+    }
+
+    public void AddItem() => items++;
+
+    public bool UseItem()
+    {
+        if (items == 0) return false;
+        items--;
+        return true;
     }
 
     private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + environment.origin.x, n.y + environment.origin.y, 0);

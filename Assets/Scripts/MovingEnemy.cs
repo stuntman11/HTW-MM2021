@@ -4,12 +4,23 @@ using UnityEngine;
 
 public class MovingEnemy : EntityBehaviour
 {
+    public int LuringRange = 0;
+
     private List<Vector2Int> path;
     private int walkIndex = 0;
+
+    private int luringState = -1;
+    private IEnumerator<Vector2Int> lurePath;
+    private int luringIdle = 0;
 
     public IEnumerable<Vector2Int> Path
     {
         get { return path; }
+    }
+
+    public bool IsLuring
+    {
+        get { return luringState != -1; }
     }
 
     protected override void OnStart()
@@ -22,36 +33,75 @@ public class MovingEnemy : EntityBehaviour
 
     protected override void OnTick(Move move)
     {
-        /*
-        EntityBehaviour player = level.Player.GetComponent<EntityBehaviour>();
-        PathFinding finding = level.Path(GridPos, player.GridPos);
-
-        if (finding.Path?.Count > 0)
+        if (move == Move.Lure)
         {
-            RotateTowards(finding.Path[0]);
-            SetPosition(finding.Path[0]);
+            PathFinding finding = level.Path(GridPos, level.PlayerPos);
+            if (finding.Distance > LuringRange) return;
+            lurePath = finding.Path.GetEnumerator();
+            luringState = 0;
         }
-        */
 
+        if (luringState == 0) UpdateLuring0();
+        else if (luringState == 1) UpdateLuring1();
+        else if (luringState == 2) UpdateLuring2();
+        else UpdateWalk();
+    }
+
+    private void UpdateWalk()
+    {
         walkIndex = (walkIndex + 1) % path.Count;
         MoveTowards(path[walkIndex]);
     }
 
-    public Vector2Int FindNearestToPath(Vector2Int pos)
+    private void UpdateLuring0()
+    {
+        if (lurePath.MoveNext())
+        {
+            MoveTowards(lurePath.Current);
+        }
+        else
+        {
+            luringIdle = 3;
+            luringState = 1;
+        }
+    }
+
+    private void UpdateLuring1()
+    {
+        if (luringIdle == 0)
+        {
+            walkIndex = FindNearestToPath(GridPos);
+            PathFinding finding = level.Path(GridPos, path[walkIndex]);
+            lurePath = finding.Path.GetEnumerator();
+            luringState = 2;
+        }
+        else
+        {
+            luringIdle--;
+        }
+    }
+
+    private void UpdateLuring2()
+    {
+        if (lurePath.MoveNext()) MoveTowards(lurePath.Current);
+        else luringState = -1;
+    }
+
+    public int FindNearestToPath(Vector2Int pos)
     {
         float bestDist = float.PositiveInfinity;
-        Vector2Int bestPath = Vector2Int.zero;
+        int bestIndex = -1;
 
-        foreach (Vector2Int singlePath in path)
+        for (int i = 0; i < path.Count; i++)
         {
-            float distance = GridUtils.DistanceBetween(pos, singlePath);
+            float distance = GridUtils.DistanceBetween(pos, path[i]);
 
             if (distance < bestDist)
             {
-                bestPath = singlePath;
-                distance = bestDist;
+                bestIndex = i;
+                bestDist = distance;
             }
         }
-        return bestPath;
+        return bestIndex;
     }
 }

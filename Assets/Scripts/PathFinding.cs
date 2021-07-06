@@ -11,10 +11,16 @@ public class PathFinding
     private List<PathNode> open;
     private ISet<Vector2Int> closed;
     private List<Vector2Int> path;
+    private float distance;
 
     public IReadOnlyList<Vector2Int> Path
     {
         get { return path; }
+    }
+
+    public float Distance
+    {
+        get { return distance; }
     }
 
     public PathFinding(LevelController controller, Vector2Int start, Vector2Int target)
@@ -41,6 +47,7 @@ public class PathFinding
 
             if (node.Pos == Target)
             {
+                distance = node.Gcost;
                 TracePath(node);
                 break;
             }
@@ -69,7 +76,7 @@ public class PathFinding
         {
             for (int y = -1; y <= 1; y++)
             {
-                int s = x + y;
+                int s = Mathf.Abs(x) + Mathf.Abs(y);
                 if (s == 0 || s == 2) continue;
                 Vector2Int offset = new Vector2Int(x, y);
                 Vector2Int nPos = node.Pos + offset;
