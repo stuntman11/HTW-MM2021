@@ -106,12 +106,22 @@ public class LevelController : MonoBehaviour
         {
             timer = 0;
             hasTicked = true;
-            Move move = moves.Dequeue();
+            Move move = ConvertMove(moves.Dequeue());
             OnTick?.Invoke(move);
             ChangeScoreBy(-50);
             RecalculateLight();
             RecalculatePaths();
         }
+    }
+
+    private Move ConvertMove(Move move)
+    {
+        if (move == Move.Activate)
+        {
+            if (items == 0) return Move.Wait;
+            items--;
+        }
+        return move;
     }
 
     public Vector3 GridToWorldPos(Vector2Int pos)
@@ -159,6 +169,7 @@ public class LevelController : MonoBehaviour
 
         foreach (EntityBehaviour emitter in lightEmitter)
         {
+            if (emitter.IsDizzy) continue;
             ILightStrategy strategy = emitter.GetComponent<ILightStrategy>();
             List<Vector4> rays = strategy.CalculateRays(emitter.GridDir);
             foreach (Vector4 ray in rays) LightTrace(emitter.GridPos, ray);
@@ -209,8 +220,18 @@ public class LevelController : MonoBehaviour
     {
         EntityBehaviour player = Player.GetComponent<EntityBehaviour>();
         TileBase lightTile = TileAt(lights, player.GridPos);
+        bool isTouchingEnemy = false;
 
-        if (lightTile != null || MakeNoSound.Score == 0)
+        foreach (EntityBehaviour entity in FindObjectsOfType<EntityBehaviour>())
+        {
+            if (entity.GetComponent<IEnemy>() != null && entity.GridPos == PlayerPos)
+            {
+                isTouchingEnemy = true;
+                break;
+            }
+        }
+
+        if (lightTile != null || MakeNoSound.Score == 0 || isTouchingEnemy)
         {
             SceneManager.LoadScene("GameOver");
         }
@@ -242,13 +263,6 @@ public class LevelController : MonoBehaviour
     }
 
     public void AddItem() => items++;
-
-    public bool UseItem()
-    {
-        if (items == 0) return false;
-        items--;
-        return true;
-    }
 
     private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + environment.origin.x, n.y + environment.origin.y, 0);
     private Vector2Int NormalizeGrid(Vector3Int n) => new Vector2Int(n.x - environment.origin.x, n.y - environment.origin.y);

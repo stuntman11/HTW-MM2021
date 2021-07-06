@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StaticEnemy : EntityBehaviour
+public class StaticEnemy : EntityBehaviour, IEnemy
 {
     public int LuringRange = 0;
 

@@ -39,6 +39,7 @@
 			<item>rechts</item>
 			<item>warten</item>
 			<item>anlocken</item>
+			<item>aktivieren</item>
 		</one-of>
 	</rule>
 </grammar>

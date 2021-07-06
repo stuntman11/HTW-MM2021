@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Move { Up, Down, Left, Right, Wait, Lure };
+public enum Move { Up, Down, Left, Right, Wait, Lure, Activate };
 
 public class ActionParser
 {
@@ -33,6 +33,7 @@ public class ActionParser
         else if (move.Equals("rechts")) return Move.Right;
         else if (move.Equals("warten")) return Move.Wait;
         else if (move.Equals("anlocken")) return Move.Lure;
+        else if (move.Equals("aktivieren")) return Move.Activate;
 
         throw new ArgumentException("illegal action");
     }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingEnemy : EntityBehaviour
+public class MovingEnemy : EntityBehaviour, IEnemy
 {
     public int LuringRange = 0;
 
