@@ -6,6 +6,11 @@ public class CameraController : MonoBehaviour
 {
     public Transform target;
 
+    private void Start()
+    {
+        transform.position = target.position;
+    }
+
     void Update()
     {
         Vector2 nextPos = Vector2.Lerp(transform.position, target.position, Time.deltaTime);

@@ -5,8 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class LevelFinishTrigger : EntityBehaviour
 {
+    private bool hasTriggered = false;
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        level.OnAfterTick += OnAfterTick;
+    }
+
+    private void OnAfterTick()
+    {
+        if (!hasTriggered) return;
+        SceneManager.LoadScene("LevelFinished");
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        SceneManager.LoadScene("LevelFinished");
+        hasTriggered = true;
     }
 }
