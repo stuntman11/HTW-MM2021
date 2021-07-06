@@ -10,18 +10,13 @@ public class CollectableScipt : EntityBehaviour
     protected override void OnStart()
     {
         base.OnStart();
-
-        if (VisibleRadius > 0)
-        {
-            level.OnTick += (move) => UpdateVisibility();
-            UpdateVisibility();
-        }
+        UpdateVisibility();
     }
 
     private void UpdateVisibility()
     {
         float distance = GridUtils.DistanceBetween(level.PlayerPos, GridPos);
-        bool isVisible = distance <= VisibleRadius;
+        bool isVisible = VisibleRadius == 0 || distance <= VisibleRadius;
         gameObject.SetActive(isVisible);
     }
 
@@ -30,4 +25,5 @@ public class CollectableScipt : EntityBehaviour
         Destroy(gameObject);
         level.ChangeScoreBy(CollectableValue);
     }
+    protected override void OnTick(Move move) => UpdateVisibility();
 }

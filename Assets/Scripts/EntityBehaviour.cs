@@ -81,5 +81,11 @@ public class EntityBehaviour : MonoBehaviour
         transform.position = level.GridToWorldPos(pos);
     }
 
+    public void OnDestroy()
+    {
+        level.OnStart -= OnStart;
+        level.OnTick -= OnTick;
+    }
+
     protected virtual void OnTick(Move move) { }
 }

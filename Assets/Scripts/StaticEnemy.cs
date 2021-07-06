@@ -7,6 +7,7 @@ public class StaticEnemy : EntityBehaviour
     public int LuringRange = 0;
 
     private Vector2Int startPos;
+    private Vector2Int startDir;
 
     private int luringState = -1;
     private IEnumerator<Vector2Int> lurePath;
@@ -16,6 +17,7 @@ public class StaticEnemy : EntityBehaviour
     {
         base.OnStart();
         startPos = GridPos;
+        startDir = GridDir;
     }
 
     public bool IsLuring
@@ -67,7 +69,14 @@ public class StaticEnemy : EntityBehaviour
 
     private void UpdateLuring2()
     {
-        if (lurePath.MoveNext()) MoveTowards(lurePath.Current);
-        else luringState = -1;
+        if (lurePath.MoveNext())
+        {
+            MoveTowards(lurePath.Current);
+        }
+        else
+        {
+            RotateTo(startDir);
+            luringState = -1;
+        }
     }
 }
