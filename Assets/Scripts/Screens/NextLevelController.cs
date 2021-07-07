@@ -11,7 +11,7 @@ public class NextLevelController : MonoBehaviour
     
     void Awake()
     {
-        string[] keywords = new string[] { "weiter, zurück" };
+        string[] keywords = new string[] { "weiter", "zurück" };
         recognizer = new KeywordRecognizer(keywords, ConfidenceLevel.Low);
         recognizer.OnPhraseRecognized += OnRecognition;
 

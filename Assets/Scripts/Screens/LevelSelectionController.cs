@@ -36,7 +36,9 @@ public class LevelSelectionController : MonoBehaviour
             btnLevelTransform.anchorMax = new Vector2(0.5f, 1);
             btnLevelTransform.pivot = new Vector2(0.5f, 1);
 
-            btnLevel.onClick.AddListener(() => MakeNoSound.LoadLevel(i));
+
+            int levelIndex = i;
+            btnLevel.onClick.AddListener(() => MakeNoSound.LoadLevel(levelIndex));
             btnTxt.text = levelTxt;
         }
     }

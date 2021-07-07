@@ -22,6 +22,7 @@ public class CollectableScipt : EntityBehaviour
 
     protected void OnTriggerEnter2D(Collider2D other)
     {
+        GameObject.Find("Audio/Collect").GetComponent<AudioSource>().Play();
         Destroy(gameObject);
         level.ChangeScoreBy(CollectableValue);
     }

@@ -126,6 +126,7 @@ public class LevelController : MonoBehaviour
         {
             if (items == 0) return Move.Wait;
             items--;
+            GameObject.Find("Audio/Zap").GetComponent<AudioSource>().Play();
             UpdateJammerIndicator();
         }
         return move;
