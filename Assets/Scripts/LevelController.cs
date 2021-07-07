@@ -21,6 +21,7 @@ public class LevelController : MonoBehaviour
     public GameObject Map;
     public GameObject EmptyTilemap;
     public Transform Player;
+    public GameObject JammerIndicator;
     public TileBase LightTile;
     public TileBase PathTile;
 
@@ -44,7 +45,8 @@ public class LevelController : MonoBehaviour
     private TextMeshProUGUI scoreText;
 
     private List<EntityBehaviour> lightEmitter = new List<EntityBehaviour>();
-    private List<MovingEnemy> movingEnemies = new List<MovingEnemy>();
+    private List<EntityBehaviour> finishTiles = new List<EntityBehaviour>();
+    private List<EntityBehaviour> enemies = new List<EntityBehaviour>();
 
     public Vector2Int PlayerPos
     {
@@ -71,6 +73,8 @@ public class LevelController : MonoBehaviour
         scoreText = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
         scoreText.SetText(MakeNoSound.Score.ToString());
 
+        JammerIndicator.SetActive(false);
+
         CommandController command = GetComponent<CommandController>();
         command.OnCommand += OnCommand;
     }
@@ -82,10 +86,12 @@ public class LevelController : MonoBehaviour
         foreach (EntityBehaviour entity in FindObjectsOfType<EntityBehaviour>())
         {
             ILightStrategy lightStrategy = entity.GetComponent<ILightStrategy>();
-            MovingEnemy movingEnemy = entity.GetComponent<MovingEnemy>();
+            IEnemy enemy = entity.GetComponent<IEnemy>();
+            LevelFinishTrigger finish = entity.GetComponent<LevelFinishTrigger>();
 
             if (lightStrategy != null) lightEmitter.Add(entity);
-            if (movingEnemy != null) movingEnemies.Add(movingEnemy);
+            if (enemy != null) enemies.Add(entity);
+            if (finish != null) finishTiles.Add(finish);
         }
         RecalculateLight();
         RecalculatePaths();
@@ -120,6 +126,7 @@ public class LevelController : MonoBehaviour
         {
             if (items == 0) return Move.Wait;
             items--;
+            UpdateJammerIndicator();
         }
         return move;
     }
@@ -180,9 +187,12 @@ public class LevelController : MonoBehaviour
     {
         paths.ClearAllTiles();
 
-        foreach (MovingEnemy enemy in movingEnemies)
+        foreach (EntityBehaviour enemy in enemies)
         {
-            foreach (Vector2Int pos in enemy.Path)
+            MovingEnemy moving = enemy.GetComponent<MovingEnemy>();
+            if (moving == null) continue;
+
+            foreach (Vector2Int pos in moving.Path)
             {
                 SetTile(paths, pos, PathTile);
             }
@@ -218,23 +228,37 @@ public class LevelController : MonoBehaviour
 
     private void CheckGameLost()
     {
-        EntityBehaviour player = Player.GetComponent<EntityBehaviour>();
-        TileBase lightTile = TileAt(lights, player.GridPos);
-        bool isTouchingEnemy = false;
-
-        foreach (EntityBehaviour entity in FindObjectsOfType<EntityBehaviour>())
+        if (!IsTouchingFinish())
         {
-            if (entity.GetComponent<IEnemy>() != null && entity.GridPos == PlayerPos)
+            if (TileAt(lights, PlayerPos) != null || MakeNoSound.Score == 0 || IsTouchingEnemy())
             {
-                isTouchingEnemy = true;
-                break;
+                SceneManager.LoadScene("GameOver");
             }
         }
+    }
 
-        if (lightTile != null || MakeNoSound.Score == 0 || isTouchingEnemy)
+    private bool IsTouchingEnemy()
+    {
+        foreach (EntityBehaviour enemy in enemies)
         {
-            SceneManager.LoadScene("GameOver");
+            if (enemy.GridPos == PlayerPos)
+            {
+                return true;
+            }
         }
+        return false;
+    }
+
+    private bool IsTouchingFinish()
+    {
+        foreach (EntityBehaviour finish in finishTiles)
+        {
+            if (finish.GridPos == PlayerPos)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void OnCommand(string command)
@@ -262,7 +286,13 @@ public class LevelController : MonoBehaviour
         scoreText.SetText(MakeNoSound.Score.ToString());
     }
 
-    public void AddItem() => items++;
+    public void AddItem()
+    {
+        items++;
+        UpdateJammerIndicator();
+    }
+
+    private void UpdateJammerIndicator() => JammerIndicator.SetActive(items > 0);
 
     private Vector3Int DenormalizeGrid(Vector2Int n) => new Vector3Int(n.x + environment.origin.x, n.y + environment.origin.y, 0);
     private Vector2Int NormalizeGrid(Vector3Int n) => new Vector2Int(n.x - environment.origin.x, n.y - environment.origin.y);

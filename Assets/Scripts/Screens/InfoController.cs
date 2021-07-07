@@ -17,6 +17,17 @@ public class InfoController : MonoBehaviour
 
         infoBtn = InfoScreen.transform.Find("InfoBtn").GetComponent<Button>();
         infoBtn.onClick.AddListener(OnInfoToggle);
+
+        CommandController command = GetComponent<CommandController>();
+        command.OnCommand += OnCommand;
+    }
+
+    private void OnCommand(string command)
+    {
+        if (command.Equals("pause"))
+        {
+            infoPopup.SetActive(false);
+        }
     }
 
     private void OnInfoToggle()
