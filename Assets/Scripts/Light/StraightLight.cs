@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a straight, linear light geometry
+/// </summary>
 public class StraightLight : MonoBehaviour, ILightStrategy
 {
+    /// <summary>Length of the line</summary>
     public int Length;
 
     public List<Vector4> CalculateRays(Vector2Int direction)

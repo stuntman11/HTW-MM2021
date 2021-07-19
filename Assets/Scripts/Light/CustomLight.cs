@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a custom light geometry based on the specified rays
+/// </summary>
 public class CustomLight : MonoBehaviour, ILightStrategy
 {
+    /// <summary>A list of custom ray directions as Vector2</summary>
     public List<Vector2> RayList;
 
     public List<Vector4> CalculateRays(Vector2Int direction) 

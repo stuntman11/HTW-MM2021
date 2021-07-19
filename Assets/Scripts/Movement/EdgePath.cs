@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a path by key positions aka. waypoints.
+/// Generates from Start to End position and back from End to Start position.
+/// </summary>
 public class EdgePath : MonoBehaviour, IPathGenerator
 {
+    /// <summary>List of waypoints</summary>
     public List<Vector2Int> Waypoints;
 
     public List<Vector2Int> GeneratePath()

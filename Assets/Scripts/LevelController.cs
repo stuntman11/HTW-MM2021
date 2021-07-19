@@ -6,29 +6,47 @@ using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+/// <summary>
+/// Manages tilemaps, entities, light and path calculations
+/// </summary>
 public class LevelController : MonoBehaviour
 {
+    /// <summary>Describes a handler for the LevelStartEvent</summary>
     public delegate void LevelStartHandler();
+    /// <summary>Describes a handler for the TickEvent</summary>
     public delegate void TickEventHandler(Move move);
+    /// <summary>Describes a handler for the AfterTickEvent</summary>
     public delegate void AfterTickEventHandler();
+    /// <summary>The duration each tick lasts in seconds</summary>
     public static readonly float TICK_TIME = 0.5f;
 
+    /// <summary>Progress of a tick, ranging from 0 to 1</summary>
     public float TickProgress
     {
        get { return Mathf.Clamp01(timer * 1.0f / TICK_TIME);  }
     }
 
+    /// <summary>Reference to the scenes map object</summary>
     public GameObject Map;
+    /// <summary>Reference to the EmptyTilemap prefab</summary>
     public GameObject EmptyTilemap;
+    /// <summary>Reference to the scenes player object</summary>
     public Transform Player;
+    /// <summary>Reference to the jammer asset</summary>
     public GameObject JammerIndicator;
+    /// <summary>Reference to the light tile asset</summary>
     public TileBase LightTile;
+    /// <summary>Reference to the path tile asset</summary>
     public TileBase PathTile;
 
+    /// <summary>Initial score of the level</summary>
     public int InitialScore;
 
+    /// <summary>Event that is executed at the level start</summary>
     public event LevelStartHandler OnStart;
+    /// <summary>Event that is executed each tick</summary>
     public event TickEventHandler OnTick;
+    /// <summary>Event that is executed after a tick is fully completed</summary>
     public event AfterTickEventHandler OnAfterTick;
 
     private Queue<Move> moves = new Queue<Move>();
@@ -48,6 +66,7 @@ public class LevelController : MonoBehaviour
     private List<EntityBehaviour> finishTiles = new List<EntityBehaviour>();
     private List<EntityBehaviour> enemies = new List<EntityBehaviour>();
 
+    /// <summary>The player position on the grid</summary>
     public Vector2Int PlayerPos
     {
         get { return Player.GetComponent<EntityBehaviour>().GridPos; }
@@ -132,6 +151,11 @@ public class LevelController : MonoBehaviour
         return move;
     }
 
+    /// <summary>
+    /// Converts a 2d position on the grid to a 3d world position
+    /// </summary>
+    /// <param name="pos">Grid position</param>
+    /// <returns>World position</returns>
     public Vector3 GridToWorldPos(Vector2Int pos)
     {
         Vector3 world = environment.GetCellCenterWorld(DenormalizeGrid(pos));
@@ -139,6 +163,11 @@ public class LevelController : MonoBehaviour
         return world;
     }
 
+    /// <summary>
+    /// Converts a 3d world position to a 2d position on the grid
+    /// </summary>
+    /// <param name="world">World position</param>
+    /// <returns>Grid position</returns>
     public Vector2Int WorldToGridPos(Vector3 world)
     {
         Vector3Int grid = environment.WorldToCell(new Vector3(world.x, world.y, 0));
@@ -157,6 +186,12 @@ public class LevelController : MonoBehaviour
         tilemap.SetTile(grid, tile);
     }
 
+    /// <summary>
+    /// Returns if the tile at the specified position is solid.
+    /// Solid states, that the player can not walk on this tile.
+    /// </summary>
+    /// <param name="pos">Grid position</param>
+    /// <returns>True if the tile is solid</returns>
     public bool IsTileSolid(Vector2Int pos)
     {
         Tile tile = TileAt(environment, pos);
@@ -164,6 +199,12 @@ public class LevelController : MonoBehaviour
         return tile.colliderType != Tile.ColliderType.None;
     }
 
+    /// <summary>
+    /// Executes a A* path finding from a start position to a target position.
+    /// </summary>
+    /// <param name="start">Start position</param>
+    /// <param name="target">Target position</param>
+    /// <returns>A PathFinding object</returns>
     public PathFinding Path(Vector2Int start, Vector2Int target)
     {
         PathFinding finding = new PathFinding(this, start, target);
@@ -281,12 +322,19 @@ public class LevelController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Changes the level score by the specified amount
+    /// </summary>
+    /// <param name="change">Change amount</param>
     public void ChangeScoreBy(int change)
     {
         MakeNoSound.Score = Mathf.Max(MakeNoSound.Score + change, 0);
         scoreText.SetText(MakeNoSound.Score.ToString());
     }
 
+    /// <summary>
+    /// Adds a jammer item to the inventory
+    /// </summary>
     public void AddItem()
     {
         items++;

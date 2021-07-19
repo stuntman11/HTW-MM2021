@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a cone light geometry
+/// </summary>
 public class ConeLight : MonoBehaviour, ILightStrategy
 {
+    /// <summary>Length of the cone in the forward direction</summary>
     public int Length;
 
     public List<Vector4> CalculateRays(Vector2Int direction)

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages the collider of a finish trigger
+/// </summary>
 public class LevelFinishTrigger : EntityBehaviour
 {
     private bool hasTriggered = false;

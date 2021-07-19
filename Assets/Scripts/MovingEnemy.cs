@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents an enemy with a default path
+/// </summary>
 public class MovingEnemy : EntityBehaviour, IEnemy
 {
+    /// <summary>Maximum range in which an enemy can hear a luring command</summary>
     public int LuringRange = 0;
 
     private List<Vector2Int> path;
@@ -13,11 +17,13 @@ public class MovingEnemy : EntityBehaviour, IEnemy
     private IEnumerator<Vector2Int> lurePath;
     private int luringIdle = 0;
 
+    /// <summary>The enemies path as a list of absolute positions</summary>
     public IEnumerable<Vector2Int> Path
     {
         get { return path; }
     }
 
+    /// <summary>True if the enemy is in luring mode</summary>
     public bool IsLuring
     {
         get { return luringState != -1; }
@@ -87,6 +93,11 @@ public class MovingEnemy : EntityBehaviour, IEnemy
         else luringState = -1;
     }
 
+    /// <summary>
+    /// Finds the nearest path index to the specified position
+    /// </summary>
+    /// <param name="pos">Position</param>
+    /// <returns>Index of position in path</returns>
     public int FindNearestToPath(Vector2Int pos)
     {
         float bestDist = float.PositiveInfinity;

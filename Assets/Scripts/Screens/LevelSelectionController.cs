@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.Windows.Speech;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages elements and voice input of the level selection screen
+/// </summary>
 public class LevelSelectionController : MonoBehaviour
 {
     private readonly string[] NUMERIC = new string[]
@@ -12,6 +15,7 @@ public class LevelSelectionController : MonoBehaviour
         "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun"
     };
 
+    /// <summary>Reference to the LevelButton prefab</summary>
     public RectTransform LevelButton;
 
     private PhraseRecognizer recognizer;

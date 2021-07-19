@@ -5,6 +5,9 @@ using UnityEngine.Windows.Speech;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages elements and voice input of the main menu screen
+/// </summary>
 public class MainMenuController : MonoBehaviour
 {
     private KeywordRecognizer recognizer;
@@ -38,7 +41,7 @@ public class MainMenuController : MonoBehaviour
 
     private void Exit()
     {
-        //UnityEditor.EditorApplication.ExitPlaymode();
+        /// <summary>UnityEditor.EditorApplication.ExitPlaymode();</summary>
         Application.Quit();
     }
 

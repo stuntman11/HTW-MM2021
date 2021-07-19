@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a rectangular light geometry
+/// </summary>
 public class BlockLight : MonoBehaviour, ILightStrategy
 {
+    /// <summary>Size of the block in both left and right directions</summary>
     public int Width;
+    /// <summary>Length of the block in the forward direction</summary>
     public int Length;
+    /// <summary>True if geometry is shifted in the forward direction by one</summary>
     public bool HasOffset;
 
     public List<Vector4> CalculateRays(Vector2Int direction)

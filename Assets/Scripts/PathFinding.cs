@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents an A* path finding task in the world
+/// </summary>
 public class PathFinding
 {
+    /// <summary>Start position</summary>
     public readonly Vector2Int Start;
+    /// <summary>Target position</summary>
     public readonly Vector2Int Target;
 
     private LevelController controller;
@@ -13,16 +18,24 @@ public class PathFinding
     private List<Vector2Int> path;
     private float distance;
 
+    /// <summary>Calculated best path</summary>
     public IReadOnlyList<Vector2Int> Path
     {
         get { return path; }
     }
 
+    /// <summary>Calculated best distance</summary>
     public float Distance
     {
         get { return distance; }
     }
 
+    /// <summary>
+    /// Creates a level driven PathFinding object
+    /// </summary>
+    /// <param name="controller">Instance of the LeveController</param>
+    /// <param name="start">Start position</param>
+    /// <param name="target">Target position</param>
     public PathFinding(LevelController controller, Vector2Int start, Vector2Int target)
     {
         this.controller = controller;
@@ -30,6 +43,9 @@ public class PathFinding
         this.Target = target;
     }
 
+    /// <summary>
+    /// Calculates the best path via A* path finding.
+    /// </summary>
     public void Execute()
     {
         open = new List<PathNode>();

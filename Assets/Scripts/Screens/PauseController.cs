@@ -5,9 +5,14 @@ using UnityEngine.Windows.Speech;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages elements and voice input of the pause screen
+/// </summary>
 public class PauseController : MonoBehaviour
 {
+    /// <summary>Reference to the scenes PauseScreen object</summary>
     public GameObject PauseScreen;
+
     private KeywordRecognizer recognizer;
     
     private void Awake()

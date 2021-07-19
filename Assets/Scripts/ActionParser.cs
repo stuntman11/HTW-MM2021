@@ -3,8 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents an action in the level
+/// </summary>
 public enum Move { Up, Down, Left, Right, Wait, Lure, Activate };
 
+/// <summary>
+/// Parses a string of commands to actions
+/// </summary>
 public class ActionParser
 {
     private readonly string[] MULTIPLIER = new string[]
@@ -38,6 +44,11 @@ public class ActionParser
         throw new ArgumentException("illegal action");
     }
 
+    /// <summary>
+    /// Translates a string of commands to the corresponding list of moves
+    /// </summary>
+    /// <param name="command">String of commands</param>
+    /// <returns>List of Moves</returns>
     public List<Move> Parse(string command)
     {
         try

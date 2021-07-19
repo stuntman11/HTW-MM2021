@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a path by key positions aka. waypoints.
+/// Generates from Start to End position and forms a full cycle.
+/// </summary>
 public class CircularPath : MonoBehaviour, IPathGenerator
 {
+    /// <summary>List of waypoints</summary>
     public List<Vector2Int> Waypoints;
 
     public List<Vector2Int> GeneratePath()

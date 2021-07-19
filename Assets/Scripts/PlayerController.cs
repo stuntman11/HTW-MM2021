@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Applies executed moves to the player
+/// </summary>
 public class PlayerController : EntityBehaviour
 {
     protected override void OnTick(Move move)

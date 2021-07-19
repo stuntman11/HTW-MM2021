@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the info popup that displays all controls
+/// </summary>
 public class InfoController : MonoBehaviour
 {
+    /// <summary>A reference to the scenes InfoScreen object</summary>
     public GameObject InfoScreen;
 
     private Button infoBtn;

@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents an enemy without a default path
+/// </summary>
 public class StaticEnemy : EntityBehaviour, IEnemy
 {
+    /// <summary>Maximum range in which an enemy can hear a luring command</summary>
     public int LuringRange = 0;
 
     private Vector2Int startPos;
@@ -20,6 +24,7 @@ public class StaticEnemy : EntityBehaviour, IEnemy
         startDir = GridDir;
     }
 
+    /// <summary>True if the enemy is in luring mode</summary>
     public bool IsLuring
     {
         get { return luringState != -1; }

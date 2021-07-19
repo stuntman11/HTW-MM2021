@@ -5,9 +5,13 @@ using UnityEngine.Windows.Speech;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages elements and voice input of the game over screen
+/// </summary>
 public class GameOverController : MonoBehaviour
 {
     private KeywordRecognizer recognizer;
+
     void Awake()
     {
         string[] keywords = new string[] { "neustart", "zurück" };

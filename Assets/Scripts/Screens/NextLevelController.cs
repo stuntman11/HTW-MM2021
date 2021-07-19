@@ -5,6 +5,9 @@ using UnityEngine.Windows.Speech;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages elements and voice input of the level finished screen
+/// </summary>
 public class NextLevelController : MonoBehaviour
 {
     private KeywordRecognizer recognizer;

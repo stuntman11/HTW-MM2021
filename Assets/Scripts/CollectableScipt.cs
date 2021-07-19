@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages properties and the collider of a collectable
+/// </summary>
 public class CollectableScipt : EntityBehaviour
 {
+    /// <summary>Score value of the collectable</summary>
     public int CollectableValue = 1000;
+    /// <summary>Radius in which the collecable is visible</summary>
     public int VisibleRadius = 0;
 
     protected override void OnStart()
@@ -20,7 +25,7 @@ public class CollectableScipt : EntityBehaviour
         gameObject.SetActive(isVisible);
     }
 
-    protected void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         GameObject.Find("Audio/Collect").GetComponent<AudioSource>().Play();
         Destroy(gameObject);
